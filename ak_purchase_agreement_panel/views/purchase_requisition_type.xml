@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  
+    <record id="view_purchase_requisition_type_form_panel_evaluation" model="ir.ui.view">
+        <field name="name">purchase.requisition.type.form.panel.evaluation</field>
+        <field name="model">purchase.requisition.type</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='exclusive']" position="after">
+                <field name="enable_comittee_evaluation"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

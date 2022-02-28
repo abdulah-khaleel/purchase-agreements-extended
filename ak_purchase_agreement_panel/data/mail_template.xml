@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <!-- <template id="notify_purchase_panel_members_for_evaluation">
+            <p>Dear <span t-field="object.name"/>,</
+            p>
+            <p>Please login 
+            <b>
+            <span t-field="object.book_id.name"/>
+            </b> book on <span t-field="object.rent_date"/>
+            <br/>
+            The due date of book is
+            <b style="color:red;">
+            <span t-field="object.return_date"/>
+            </b> -->
+
+    </data>
+</odoo>

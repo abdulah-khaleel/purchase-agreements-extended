@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ 
+    <record id="purchase_panel_list_view" model="ir.ui.view">
+        <field name="name">purchase.panel.list.view</field>
+        <field name="model">purchase.panel</field>
+        <field name="arch" type="xml">
+            <tree string="Purchase Panels">
+                <field name="name"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="purchase_panel_form_view" model="ir.ui.view">
+        <field name="name">purchase.panel.form.view</field>
+        <field name="model">purchase.panel</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Panels">
+                <sheet>
+                    <div class="oe_title">
+                        <h2><field name="name" placeholder="e.g. Purchase Panel - IT and Hardware" required="1"/></h2>
+                         <br/> 
+                    </div>
+                        <group string="Panel Members"></group>
+                        <field name="member_ids" nolabel="1">
+                            <tree  editable="bottom">
+                                <field name="name"/>
+                            </tree>
+                        </field>
+                        <field name="active" invisible="1"/>                    
+                </sheet>
+            </form>
+        </field>
+    </record>
+  
+    <record id="action_menu_purchase_panel" model="ir.actions.act_window">
+        <field name="name">Purchase Panel</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.panel</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    
+    <menuitem
+    id="menu_purchase_panel"
+    action="action_menu_purchase_panel"
+    name="Purchase Panel"
+    parent="purchase.menu_purchase_config"
+    groups="purchase.group_purchase_user"
+    sequence="3"/>
+ 
+
+</odoo>

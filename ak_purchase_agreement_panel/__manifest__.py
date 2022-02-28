@@ -1,0 +1,38 @@
+# -*- coding: utf-8 -*-
+################################################################################# 
+#
+#    Author: Abdullah Khalil. Copyrights (C) 2021-TODAY reserved. 
+#
+#    You may use this app as per the rules outlined in the GNU LESSER
+#    GENERAL PUBLIC LICENSE (LGPL v3), Version 3. 
+#    See <http://www.gnu.org/licenses/> for more detials.
+#
+################################################################################# 
+
+{
+    'name': "Purchase Agreement Panels",   
+    'summary': "Panel Members can evaluate quotations and participate in bid selection",   
+    'description': """
+        This app extends on the purchase agreement workflow by allowing you to setup purchase 
+        panels, and invite panel members to participate in the bids evaluation and selection 
+        process. The app also allows setting up evaluation forms that can be selected for a
+         particular purchase agreement.  
+    """,   
+    'author': "Abdullah Khalil",
+    'website': "https://github.com/abdulah-khaleel",
+    'category': 'Purchase',
+    'version': '14.0.0.0',
+     "license": "LGPL-3",
+    'depends': ['base','purchase','purchase_requisition'],
+    'data': [
+        'security/ir.model.access.csv',
+        'security/purchase_panel_security.xml',
+        'views/purchase_panel.xml',
+        'views/purchase_requisition.xml',
+        'views/purchase_requisition_type.xml',
+    ],
+    # 'images': ["static/description/banner-v15.png"],
+    'license': 'LGPL-3',
+    'application': False,
+    'installable': True,
+} 
