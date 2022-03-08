@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin']" position="after">
                 <field name="panel_id" attrs="{'invisible': [('enable_panel', '=', False)],'required': [('enable_panel', '=', True),('state','=','in_progress')],'readonly': [('state', 'not in', ['draft','ongoing','in_progress'])]}"/>
+                <field name="eval_template_id" attrs="{'invisible': [('enable_panel', '=', False)],'required': [('enable_panel', '=', True),('state','=','in_progress')],'readonly': [('state', 'not in', ['draft','ongoing','in_progress'])]}"/>
                 <field name="enable_panel" invisible="1" />
             </xpath>
         </field>

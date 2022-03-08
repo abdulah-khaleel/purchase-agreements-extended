@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id='bid_evaluation_action' model='ir.actions.act_window'>
+        <field name="name">Bid Evaluation Form</field>
+        <field name="res_model">bid.evaluation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+<!--  
+    <record id="bid_evaluation_list_view" model="ir.ui.view">
+        <field name="name">bid.evaluation.list.view</field>
+        <field name="model">bid.panel.members</field>
+        <field name="arch" type="xml">
+            <tree string="Bid Evaluation Template">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record> -->
+
+    <record id="bid_evaluation_form_view" model="ir.ui.view">
+        <field name="name">bid.evaluation.form.view</field>
+        <field name="model">bid.evaluation</field>
+        <field name="arch" type="xml">
+            <form string="Bid Evaluation">
+                <header>
+                    <button name="submit_evaluation" class="oe_highlight" string="Submit For Panel" type="object"/>
+                    <button name="approve_evaluation" class="oe_highlight" string="Approve" type="object" attrs="{'invisible':[('user_status','!=','pending')]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,done"/>
+                </header>
+                <sheet>
+
+                    <group string="Vendor and Bid Information">
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="user_status"/>
+                            
+                        </group>
+                        <group>
+                            <field name="po_id"/>
+                            <field name="purchase_requisition_id"/>
+                        </group>
+                    </group>
+
+                    <group string="Bid Evaluation">
+                        <group>
+                            <field name="evaluation_approach" invisible="1"/>
+                            <field name="evaluation_guidelines"/>
+                            <field name="evaluation_approach_description"/>
+                            <field name="score_limit" invisible="1"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+
+                    <group string="Questions/Evaluation Factors">
+                    </group>
+                    <notebook>
+                        <page name="Questions" string="Questions/Evaluation Factors">
+                            <field name="question_ids" nolabel="1" widget="one2many">
+                                <tree  editable="bottom" >
+                                    <field name="name" string="Question/Factor" width="300px"/>
+                                    <field name="score" string="Score" width="100px"/>
+                                    <field name="remarks" string="Remarks" width="500px"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="Panel Members" string="Panel Members">
+                            <field name="bid_approver_ids" nolabel="1" widget="one2many">
+                                <tree  editable="bottom">
+                                    <field name="user_id" string="Panel Member" width="300px"/>
+                                    <field name="review_state" string="Evaluation Review Status" width="100px" readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+  
+    <menuitem
+    id="bid_evaluation_menu"
+    action="bid_evaluation_action"
+    name="Bid Evaluation"
+    parent="purchase.menu_purchase_config"
+    groups="purchase.group_purchase_user"
+    sequence="6"/>
+ 
+
+</odoo>

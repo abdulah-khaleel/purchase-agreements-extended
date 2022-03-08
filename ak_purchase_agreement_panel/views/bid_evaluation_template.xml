@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ 
+    <record id="bid_evaluation_template_list_view" model="ir.ui.view">
+        <field name="name">bid.evaluation.template.list.view</field>
+        <field name="model">bid.evaluation.template</field>
+        <field name="arch" type="xml">
+            <tree string="Bid Evaluation Template">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="bid_evaluation_template_form_view" model="ir.ui.view">
+        <field name="name">bid.evaluation.template.form.view</field>
+        <field name="model">bid.evaluation.template</field>
+        <field name="arch" type="xml">
+            <form string="Bid Evaluation">
+                <sheet>
+                    <div class="oe_title">
+                        <h2><field name="name" placeholder="e.g. Evaluation Template for Electronics and Computer Equipment" required="1"/></h2>
+                         <br/> 
+                    </div>
+                        <group string="Sections">
+                            <group>
+                                <field name="evaluation_approach" />
+                                <field name="scorable" />
+                                <field name="score_limit" />
+                            </group><group></group>
+                        </group>
+
+                        <group string="Questions/Evaluation Factors">
+                        </group>
+                        
+                        <field name="question_ids" nolabel="1">
+                            <tree  editable="bottom">
+                                <field name="name" string="Question"/>
+                            </tree>
+                        </field>
+                        
+                </sheet>
+            </form>
+        </field>
+    </record>
+  
+    <record id="action_menu_bid_evaluation_template" model="ir.actions.act_window">
+        <field name="name">Bid Evaluation Template</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">bid.evaluation.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    
+    <menuitem
+    id="menu_bid_evaluation_template"
+    action="action_menu_bid_evaluation_template"
+    name="Bid Evaluation Template"
+    parent="purchase.menu_purchase_config"
+    groups="purchase.group_purchase_user"
+    sequence="4"/>
+
+
+</odoo>

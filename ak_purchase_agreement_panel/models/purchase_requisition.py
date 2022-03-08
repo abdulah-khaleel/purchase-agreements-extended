@@ -8,6 +8,7 @@ class PurchaseRequisition(models.Model):
 
     panel_id = fields.Many2one('purchase.panel', string="Purchase Comittee")
     enable_panel = fields.Boolean('Enable Panel Committee', compute='_check_for_purchase_panel')
+    eval_template_id = fields.Many2one('bid.evaluation.template', string="Bid Evaluation Template")
 
    
 
@@ -39,8 +40,4 @@ class PurchaseRequisition(models.Model):
             self.write({
                     'enable_panel': False,
                     })
-    
-
-
- 
-
+     

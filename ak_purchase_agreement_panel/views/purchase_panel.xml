@@ -25,7 +25,7 @@
                         <group string="Panel Members"></group>
                         <field name="member_ids" nolabel="1">
                             <tree  editable="bottom">
-                                <field name="name"/>
+                                <field name="name" string="User"/>
                             </tree>
                         </field>
                         <field name="active" invisible="1"/>                    

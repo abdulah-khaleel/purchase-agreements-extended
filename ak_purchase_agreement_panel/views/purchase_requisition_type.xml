@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_type_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='exclusive']" position="after">
-                <field name="enable_comittee_evaluation"/>
+                <field name="enable_comittee_evaluation" attrs="{'invisible': [('quantity_copy', '=', 'none')]}"/>
             </xpath>
         </field>
     </record>
