@@ -14,6 +14,11 @@
         </field>
     </record>
     
+    <record id="mail_bid_panel_member_evaluation_notification" model="mail.activity.type">
+        <field name="name">Bids Evaluation</field>
+        <field name="icon">fa-sun-o</field>
+    </record>
+    
     <record id="mail_purchase_panel_member_notification" model="mail.activity.type">
         <field name="name">Bids Evaluation</field>
         <field name="icon">fa-sun-o</field>

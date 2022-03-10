@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class PurchaseOrder(models.Model):
@@ -34,6 +35,8 @@ class PurchaseOrder(models.Model):
         }
 
     def create_bid_evaluation(self):
+        if not self.requisition_id.eval_template_id or not self.requisition_id.panel_id:
+            raise UserError(_("Please make sure an evaluation template and a purchase comittee have been set on the requisition of this bid."))
         bid_evaluation_record = self.env['bid.evaluation'].sudo().create({
             'name': f'Bid Evaluation - {self.requisition_id.name} - {self.partner_id.name}',
             'po_id': self.id,
@@ -44,7 +47,7 @@ class PurchaseOrder(models.Model):
             'question_ids': self.get_question_ids()
           })
         bid_evaluation_record = self.env['bid.evaluation'].search([('po_id', '=', self.id)])
-        bid_evaluation_record.write({
+        bid_evaluation_record.sudo().write({
             'bid_approver_ids': self.get_panel_members()
         })
         self.write({'has_evaluation': True})

@@ -25,8 +25,8 @@
      "license": "LGPL-3",
     'depends': ['base','purchase','purchase_requisition'],
     'data': [
-        'security/ir.model.access.csv',
         'security/purchase_panel_security.xml',
+        'security/ir.model.access.csv',
         'views/purchase_panel.xml',
         'views/purchase_requisition.xml',
         'views/purchase_requisition_type.xml',
