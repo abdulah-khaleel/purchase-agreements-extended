@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <odoo>
+        <template id="bid_evaluation_sheet">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h1>Purchase Comittee Evaluation Sheet for Bid <t t-esc="doc.name"/></h1>
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                    <th>Question/Factor</th>
+                                    <th>Score</th>
+                                    <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.question_ids" t-as="question" >
+                                        <td>
+                                            <t t-esc="question.name" />
+                                        </td>
+                                        <td>
+                                            <t t-esc="question.score"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="question.remarks"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        
+        <record id="report_bid_evaluation_sheet" model="ir.actions.report">
+            <field name="name">Bid Evaluation Sheet</field>
+            <field name="model">bid.evaluation</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">ak_purchase_agreement_panel.bid_evaluation_sheet</field>
+            <field name="report_file">ak_purchase_agreement_panel.bid_evaluation_sheet</field>
+            <field name="binding_model_id" ref="model_bid_evaluation"/>
+            <field name="binding_type">report</field>
+        </record>
+
+
+</odoo>

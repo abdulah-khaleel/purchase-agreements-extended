@@ -29,6 +29,15 @@
                             </group><group></group>
                         </group>
 
+                        <group string="Bid Checklist">
+                        </group>
+                        
+                        <field name="checklist_item_ids" nolabel="1">
+                            <tree  editable="bottom">
+                                <field name="name" string="Item"/>
+                            </tree>
+                        </field>
+
                         <group string="Questions/Evaluation Factors">
                         </group>
                         

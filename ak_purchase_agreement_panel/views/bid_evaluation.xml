@@ -37,6 +37,7 @@
                             <field name="partner_id" readonly="1"/>
                             <field name="deadline" attrs="{'readonly':[('state','in',['to_approve','done','cancel'])]}"/>
                             <field name="user_status" invisible="1"/>
+                            <field name="edit_questions" />
                             
                         </group>
                         <group>
@@ -62,16 +63,13 @@
                         <page name="Questions" string="Questions/Evaluation Factors">
                             <field name="question_ids" nolabel="1" widget="one2many" attrs="{'readonly':[('state','in',['to_approve','done','cancel'])]}">
                                 <tree  editable="bottom" >
-                                    <field name="name" string="Question/Factor" width="300px" />
+                                    <field name="name" string="Question/Factor" width="300px" attrs="{'readonly':[('parent.edit_questions','=','not_allowed')]}"/>
                                     <field name="score" string="Score" width="100px"/>
                                     <field name="remarks" string="Remarks" width="500px"/>
                                 </tree>
                             </field>
                             <group string="Notes">
-                                
                                     <field name="notes" nolabel="1" attrs="{'readonly':[('state','in',['to_approve','done','cancel'])]}"/>
-                             
-                 
                             </group>
                         </page>
                         <page name="Panel Members" string="Panel Members" >

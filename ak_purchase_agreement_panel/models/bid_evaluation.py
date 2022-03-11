@@ -20,6 +20,7 @@ class BidEvaluation(models.Model):
     evaluation_approach_description = fields.Text('Evaluation Approach')
     score_limit = fields.Integer('Highest Score')
     notes = fields.Text('Notes')
+    checklist_item_ids = fields.One2many('bid.evaluation.checklist','bid_evaluation_id', string="Evaluation Checklist")
     question_ids = fields.One2many('bid.evaluation.question', 'bid_evaluation_id', string="Bid Evaluation Questions")
     bid_approver_ids = fields.Many2many('bid.panel.members', string="Panel Members")
     state = fields.Selection([
@@ -34,8 +35,8 @@ class BidEvaluation(models.Model):
         ], compute="_compute_user_status")
     edit_questions = fields.Selection([
         ('allowed', 'Allowed'),
-        ('not_allowed', 'Not Approved'),
-        ], compute="_compute_user_status")
+        ('not_allowed', 'Not Allowed'),
+        ], compute="_check_questions_edit_access")
     
 
     
@@ -92,6 +93,16 @@ class BidEvaluation(models.Model):
                 self.write({'state': 'done'})
 
     
+    @api.depends('question_ids.name')
+    def _check_questions_edit_access(self):
+        for eval in self:
+            if self.env.user.has_group('purchase.group_purchase_user'):
+                eval.edit_questions = 'allowed'
+            else:
+                eval.edit_questions = 'not_allowed'
+            # approval.user_status = approval.bid_approver_ids.filtered(lambda approver: approver.user_id == self.env.user).review_state
+
+
     @api.depends('bid_approver_ids.review_state')
     def _compute_user_status(self):
         for approval in self:
@@ -120,6 +131,18 @@ class BidEvaluationQuestion(models.Model):
             if self.score > self.bid_evaluation_id.score_limit:
                 raise ValidationError(
                     _(f"The maximum score limit you can provide on each question/factor is {self.bid_evaluation_id.score_limit}."))
+
+class BidEvaluationChecklist(models.Model):
+    _name = 'bid.evaluation.checklist'
+    _description = 'Bid Evaluation Checklist'
+
+    name = fields.Char(string="Item")
+    item_clear = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No'),
+        ], string="Result")
+    bid_evaluation_id = fields.Many2one('bid.evaluation', string="Bid Evaluation")
+
 
 class BidPanelMembers(models.Model):
     _name = 'bid.panel.members'
