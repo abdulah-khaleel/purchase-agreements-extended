@@ -85,12 +85,21 @@ class BidEvaluation(models.Model):
     def approve_evaluation(self):
         for approver in self.bid_approver_ids:
             if approver.user_id.id == self.env.user.id:
-                approver.write({'review_state': 'approved'})
+                approver.write({
+                    'review_state': 'approved',
+                    'approval_date': fields.Datetime.now(),
+                    })
                 self.sudo().get_panel_member_activity(user=self.env.user).unlink()
                 self.message_post(body='Evaluation reviewed and approved.')
 
             if not 'pending' in self.bid_approver_ids.mapped('review_state'):
                 self.write({'state': 'done'})
+
+    def get_checklist_status(self, status):
+        if status == 'yes':
+            return 'Yes'
+        else:
+            return 'No'
 
     
     @api.depends('question_ids.name')
@@ -140,7 +149,7 @@ class BidEvaluationChecklist(models.Model):
     item_clear = fields.Selection([
         ('yes', 'Yes'),
         ('no', 'No'),
-        ], string="Result")
+        ], string="Available", required=True)
     bid_evaluation_id = fields.Many2one('bid.evaluation', string="Bid Evaluation")
 
 
@@ -155,6 +164,7 @@ class BidPanelMembers(models.Model):
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ], default='pending', string="Review Status")
+    approval_date = fields.Datetime('Approval Date', readonly=True)
 
 
 

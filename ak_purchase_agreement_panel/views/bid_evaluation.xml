@@ -25,8 +25,8 @@
                 <header>
                     <button name="submit_evaluation" class="oe_highlight" string="Submit For Panel" type="object" attrs="{'invisible':[('state','!=','draft')]}"/>
                     <button name="approve_evaluation" class="oe_highlight" string="Approve" type="object" attrs="{'invisible':['|',('user_status','!=','pending'),('state','!=','to_approve')]}"/>
-                    <button name="cancel_evaluation" class="oe_highlight" string="Cancel" type="object" attrs="{'invisible':[('state','not in',['draft','to_approve'])]}"/>
-                    <button name="reset_to_draft" class="oe_highlight" string="Reset to Draft" type="object" attrs="{'invisible':[('state','!=','cancel')]}"/>
+                    <button name="cancel_evaluation"  string="Cancel" type="object" attrs="{'invisible':[('state','not in',['draft','to_approve'])]}"/>
+                    <button name="reset_to_draft"   string="Reset to Draft" type="object" attrs="{'invisible':[('state','!=','cancel')]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,done"/>
                 </header>
                 <sheet>
@@ -37,7 +37,7 @@
                             <field name="partner_id" readonly="1"/>
                             <field name="deadline" attrs="{'readonly':[('state','in',['to_approve','done','cancel'])]}"/>
                             <field name="user_status" invisible="1"/>
-                            <field name="edit_questions" />
+                            <field name="edit_questions" invisible="1"/>
                             
                         </group>
                         <group>
@@ -55,6 +55,15 @@
                         </group>
                         <group>
                         </group>
+                    </group>
+
+                    <group string="Evaluation Checklist">
+                        <field name="checklist_item_ids" nolabel="1" widget="one2many" attrs="{'readonly':[('state','in',['to_approve','done','cancel'])]}">
+                            <tree  editable="bottom" >
+                                <field name="name" string="Question/Factor" width="300px" attrs="{'readonly':[('parent.edit_questions','=','not_allowed')]}"/>
+                                <field name="item_clear"/>
+                            </tree>
+                        </field>
                     </group>
 
                     <group string="Questions/Evaluation Criteria">
@@ -77,6 +86,7 @@
                                 <tree editable="bottom">
                                     <field name="user_id" string="Panel Member" width="300px"/>
                                     <field name="review_state" string="Review Status" width="100px" readonly="1"/>
+                                    <field name="approval_date" />
                                 </tree>
                             </field>
                         </page>

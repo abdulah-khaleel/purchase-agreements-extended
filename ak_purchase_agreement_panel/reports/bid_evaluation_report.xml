@@ -1,48 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
     <odoo>
-        <template id="bid_evaluation_sheet">
-            <t t-call="web.html_container">
-                <t t-foreach="docs" t-as="doc">
-                    <t t-call="web.external_layout">
-                        <div class="page">
-                            <h1>Purchase Comittee Evaluation Sheet for Bid <t t-esc="doc.name"/></h1>
-                            <table class="table table-condensed">
-                                <thead>
-                                    <tr>
-                                    <th>Question/Factor</th>
-                                    <th>Score</th>
-                                    <th>Remarks</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr t-foreach="doc.question_ids" t-as="question" >
-                                        <td>
-                                            <t t-esc="question.name" />
-                                        </td>
-                                        <td>
-                                            <t t-esc="question.score"/>
-                                        </td>
-                                        <td>
-                                            <t t-esc="question.remarks"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </t>
-                </t>
-            </t>
-        </template>
         
-        <record id="report_bid_evaluation_sheet" model="ir.actions.report">
-            <field name="name">Bid Evaluation Sheet</field>
-            <field name="model">bid.evaluation</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">ak_purchase_agreement_panel.bid_evaluation_sheet</field>
-            <field name="report_file">ak_purchase_agreement_panel.bid_evaluation_sheet</field>
-            <field name="binding_model_id" ref="model_bid_evaluation"/>
-            <field name="binding_type">report</field>
-        </record>
+    <report 
+    id="action_print_contracts"
+    model="bid.evaluation"
+    string="Print Contract"
+    report_type="qweb-pdf"
+    name="ak_purchase_agreement_panel.contracts_template"
+    file="ak_purchase_agreement_panel.contracts_template"
+    print_report_name="'Contract - %s' % (object.name)"
+/>
+
+<record id="paperformat_contracts" model="report.paperformat">
+    <field name="name">Contract Details Paper Format</field>
+    <field name="default" eval="True" />
+    <field name="format">A4</field>
+    <field name="orientation">Portrait</field>
+    <field name="margin_top">20</field>
+    <field name="margin_bottom">20</field>
+    <field name="margin_left">15</field>
+    <field name="margin_right">15</field>
+    <field name="header_line" eval="False" />
+    <field name="header_spacing">20</field>
+    <field name="dpi">100</field>
+</record>
+
+<record id="action_print_contracts" model="ir.actions.report">
+    <field name="paperformat_id" ref="ak_purchase_agreement_panel.paperformat_contracts"/>
+</record>
+
+<template id="bid_main_info">
+    <t t-if="o and 'company_id' in o">
+        <t t-set="company" t-value="o.company_id"></t>
+    </t>
+    <t t-if="not o or not 'company_id' in o">
+        <t t-set="company" t-value="res_company"></t>
+    </t>
+    
+    <t t-call="ak_purchase_agreement_panel.contract_header" />
+    <t t-raw="0" />
+    <t t-call="ak_purchase_agreement_panel.contract_footer"/>
+</template>
+
+<template id="contract_header">
+    <div class="header">
+        <!-- <div class="header-container d-flex justify-content-around p-2" style="border: 1px solid black; ">
+            <div class="left-col" style="border: 1px solid black;">
+                <p>hello world</p>
+            </div>
+            <div class="right-col" style="border: 1px solid black;">
+                <p>good bye</p>
+            </div>
+        </div> -->
+        <!-- <table class="">
+            <tbody>
+                <tr>
+                    <td>
+                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.name"/></p>
+                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.street"/></p>
+                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.street2"/></p>
+                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.email"/></p>
+                        
+                    </td>
+                    <td><span class="mr-3">Requisition Ref: </span><span t-esc="o.purchase_requisition_id.name"/></td>
+                </tr>
+            </tbody>
+        </table> -->
+        <!-- <table width="100%">
+            <tr>
+                <td>
+                    <p style="color: blue !important; font-size: 6px !important;"><span t-esc="o.po_id.company_id.name"/></p>
+                </td>
+                <td>
+                    <span t-esc="o.po_id.company_id.name"/>
+                </td>
+            </tr>
+        </table> -->
+    </div>
+</template>
+
+<template id="contract_footer">
+    <div class="footer">
+        <!-- <table width="100%">
+            <tr>
+                <td class="text-center" style="font-size: 12px;">
+                    <span><span t-esc="company.name"/>, <span t-esc="company.street"/>, <span t-esc="company.street2"/>, <span t-esc="company.city"/>, <span t-esc="company.state_id.name"/>, <span t-esc="company.country_id.name"/></span><br/>
+                    <span>Phones: <span style="margin-right:2px;" t-esc="company.phone"/></span>
+                    <span>Email: <span style="margin-right:2px; color:#0f92e7;" t-esc="company.email"/> Web: <span t-esc="company.website" style="color:#0f92e7; margin-left:2px;"/></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center" style="font-size: 13px;padding:5px 20px; font-style:italic;">
+                    Company is Registered &amp; Licensed as a limited liability company under the laws of the Islamic Republic of Afghanistan
+                </td>
+            </tr>
+        </table> -->
+    </div>
+</template>
+
+<template id="bid_evaluation_sheet_template">
+    <t t-call="web.basic_layout">
+        <t t-call="ak_purchase_agreement_panel.bid_main_info">
+            <div class="page" >
+                <h4 class="text-center" >BID EVALUATION SHEET</h4>
+                <br/>
+                <table class="table table-sm">
+
+                    <tbody>
+                        <tr>
+                            <td><span class="mr-3">Bid Ref: </span><span t-esc="o.po_id.name"/></td>
+                            <td><span class="mr-3">Requisition Ref: </span><span t-esc="o.purchase_requisition_id.name"/></td>
+                        </tr>
+                        <tr>
+                            <td><span class="mr-3">Vendor:</span><span t-esc="o.partner_id.name"/></td>
+                            <td><span class="mr-4">Bid Opening:</span><span t-esc="o.deadline"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br/>
+
+                <div>
+                    <h5>Evaluation Guidelines</h5>
+                    <p class="mr-2"><span t-esc="o.evaluation_guidelines"/></p>
+                </div>
+                <br/>
+                <div>
+                    <h5>Evaluation Approach</h5>
+                    <p><span t-esc="o.evaluation_approach_description"/></p>
+                </div>
+          
+            <br/>   
+
+            
+            <h5>Bid Checklist</h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr style="background:#f3f5f2">
+                        <th >Item</th>
+                        <th>Available</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.checklist_item_ids" t-as="item">
+                        <td><span t-esc="item.name"/></td>
+                        <td><span t-esc="o.get_checklist_status(item.item_clear)"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+
+            <h5>Bid Evaluation</h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr  style="background:#f3f5f2">
+                        <th>Question/Criteria</th>
+                        <th>Score</th>
+                        <th>Remarks (if any)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.question_ids" t-as="question">
+                        <td><span t-esc="question.name"/></td>
+                        <td><span t-esc="question.score"/></td>
+                        <td><span t-esc="question.remarks"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+
+            <div>
+                <h5>Notes</h5>
+                <p><span t-esc="o.notes"/></p>
+            </div>
+            <br/>
+
+            <h5>Purchase Comittee</h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr  style="background:#f3f5f2">
+                        <th>Member</th>
+                        <th>Approved on</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.bid_approver_ids" t-as="approver">
+                        <td><span t-esc="approver.user_id.name"/></td>
+                        <td><span t-esc="approver.approval_date"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+        </div> 
+        </t>
+    </t>
+</template> 
+
+ 
+    <template id="contracts_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="ak_purchase_agreement_panel.bid_evaluation_sheet_template"/>
+            </t>
+        </t>
+    </template>
 
 
 </odoo>

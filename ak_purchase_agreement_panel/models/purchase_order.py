@@ -21,6 +21,12 @@ class PurchaseOrder(models.Model):
         for member in self.requisition_id.panel_id.member_ids:
             members_list.append((0, 0, {'user_id': member.id, 'review_state': 'pending'}))
         return members_list
+
+    def get_checklist_item_ids(self):
+        checklist_list = []
+        for item in self.requisition_id.eval_template_id.checklist_item_ids:
+            checklist_list.append((0, 0, {'name': item.name, 'item_clear': 'no'}))
+        return checklist_list
     
     def get_bid_evaluation_record(self):
         self.ensure_one()
@@ -42,8 +48,10 @@ class PurchaseOrder(models.Model):
             'po_id': self.id,
             'purchase_requisition_id': self.requisition_id.id,
             'partner_id': self.partner_id.id,
+            'deadline': self.date_order,
             'evaluation_approach': self.requisition_id.eval_template_id.evaluation_approach,
             'score_limit': self.requisition_id.eval_template_id.score_limit,
+            'checklist_item_ids': self.get_checklist_item_ids(),
             'question_ids': self.get_question_ids()
           })
         bid_evaluation_record = self.env['bid.evaluation'].search([('po_id', '=', self.id)])
