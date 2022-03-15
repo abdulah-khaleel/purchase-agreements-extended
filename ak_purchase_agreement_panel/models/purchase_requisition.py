@@ -79,17 +79,13 @@ class PurchaseRequisition(models.Model):
             bidder_list = []
             bidder_list.append(rec.partner_id.name)
             partner_dict = {}
-            if len(rec.checklist_item_ids) == 0:
-                for name in checklist_item_names:
-                    partner_dict[name] = 'N/A'
-            else:
-                for checklist_title in checklist_item_names:
-                    for line in rec.checklist_item_ids:
-                        if line.name == checklist_title:
-                            partner_dict[line.name] = line.item_clear
-                        else:
-                            if line.name not in partner_dict:
-                                partner_dict[line.name] = 'n/a'
+            for checklist_title in checklist_item_names:
+                for line in rec.checklist_item_ids:
+                    if line.name == checklist_title:
+                        partner_dict[line.name] = line.item_clear
+                    else:
+                        if line.name not in partner_dict:
+                            partner_dict[line.name] = 'n/a'
             for title in checklist_item_names:
                 if title not in partner_dict:
                     partner_dict[title] = 'n/a'

@@ -4,14 +4,14 @@
     <report 
     id="action_print_contracts"
     model="bid.evaluation"
-    string="Print Contract"
+    string="Bid Evaluation Sheet"
     report_type="qweb-pdf"
     name="ak_purchase_agreement_panel.contracts_template"
     file="ak_purchase_agreement_panel.contracts_template"
     print_report_name="'Contract - %s' % (object.name)"
 />
 
-<record id="paperformat_contracts" model="report.paperformat">
+<record id="paperformat_bid_eval_sheet" model="report.paperformat">
     <field name="name">Contract Details Paper Format</field>
     <field name="default" eval="True" />
     <field name="format">A4</field>
@@ -26,7 +26,7 @@
 </record>
 
 <record id="action_print_contracts" model="ir.actions.report">
-    <field name="paperformat_id" ref="ak_purchase_agreement_panel.paperformat_contracts"/>
+    <field name="paperformat_id" ref="ak_purchase_agreement_panel.paperformat_bid_eval_sheet"/>
 </record>
 
 <template id="bid_main_info">
@@ -44,57 +44,13 @@
 
 <template id="contract_header">
     <div class="header">
-        <!-- <div class="header-container d-flex justify-content-around p-2" style="border: 1px solid black; ">
-            <div class="left-col" style="border: 1px solid black;">
-                <p>hello world</p>
-            </div>
-            <div class="right-col" style="border: 1px solid black;">
-                <p>good bye</p>
-            </div>
-        </div> -->
-        <!-- <table class="">
-            <tbody>
-                <tr>
-                    <td>
-                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.name"/></p>
-                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.street"/></p>
-                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.street2"/></p>
-                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.email"/></p>
-                        
-                    </td>
-                    <td><span class="mr-3">Requisition Ref: </span><span t-esc="o.purchase_requisition_id.name"/></td>
-                </tr>
-            </tbody>
-        </table> -->
-        <!-- <table width="100%">
-            <tr>
-                <td>
-                    <p style="color: blue !important; font-size: 6px !important;"><span t-esc="o.po_id.company_id.name"/></p>
-                </td>
-                <td>
-                    <span t-esc="o.po_id.company_id.name"/>
-                </td>
-            </tr>
-        </table> -->
+ 
     </div>
 </template>
 
 <template id="contract_footer">
     <div class="footer">
-        <!-- <table width="100%">
-            <tr>
-                <td class="text-center" style="font-size: 12px;">
-                    <span><span t-esc="company.name"/>, <span t-esc="company.street"/>, <span t-esc="company.street2"/>, <span t-esc="company.city"/>, <span t-esc="company.state_id.name"/>, <span t-esc="company.country_id.name"/></span><br/>
-                    <span>Phones: <span style="margin-right:2px;" t-esc="company.phone"/></span>
-                    <span>Email: <span style="margin-right:2px; color:#0f92e7;" t-esc="company.email"/> Web: <span t-esc="company.website" style="color:#0f92e7; margin-left:2px;"/></span>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center" style="font-size: 13px;padding:5px 20px; font-style:italic;">
-                    Company is Registered &amp; Licensed as a limited liability company under the laws of the Islamic Republic of Afghanistan
-                </td>
-            </tr>
-        </table> -->
+ 
     </div>
 </template>
 

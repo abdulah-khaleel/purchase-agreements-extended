@@ -4,14 +4,14 @@
     <report 
     id="action_print_checklist_summary"
     model="purchase.requisition"
-    string="Print Bids Checklist Summary"
+    string="Bids Checklist Summary"
     report_type="qweb-pdf"
     name="ak_purchase_agreement_panel.bids_checklist_template"
     file="ak_purchase_agreement_panel.bids_checklist_template"
     print_report_name="'Contract - %s' % (object.name)"
 />
 
-<record id="paperformat_contracts" model="report.paperformat">
+<record id="paperformat_checklist_summary" model="report.paperformat">
     <field name="name">Contract Details Paper Format</field>
     <field name="default" eval="True" />
     <field name="format">A4</field>
@@ -22,11 +22,11 @@
     <field name="margin_right">15</field>
     <field name="header_line" eval="False" />
     <field name="header_spacing">20</field>
-    <field name="dpi">100</field>
+    <field name="dpi">120</field>
 </record>
 
 <record id="action_print_checklist_summary" model="ir.actions.report">
-    <field name="paperformat_id" ref="ak_purchase_agreement_panel.paperformat_contracts"/>
+    <field name="paperformat_id" ref="ak_purchase_agreement_panel.paperformat_checklist_summary"/>
 </record>
 
 <template id="bid_main_info">
@@ -44,57 +44,11 @@
 
 <template id="contract_header">
     <div class="header">
-        <!-- <div class="header-container d-flex justify-content-around p-2" style="border: 1px solid black; ">
-            <div class="left-col" style="border: 1px solid black;">
-                <p>hello world</p>
-            </div>
-            <div class="right-col" style="border: 1px solid black;">
-                <p>good bye</p>
-            </div>
-        </div> -->
-        <!-- <table class="">
-            <tbody>
-                <tr>
-                    <td>
-                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.name"/></p>
-                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.street"/></p>
-                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.street2"/></p>
-                        <p style="color: pink; font-size: 5px !important;"><span t-esc="o.po_id.company_id.email"/></p>
-                        
-                    </td>
-                    <td><span class="mr-3">Requisition Ref: </span><span t-esc="o.purchase_requisition_id.name"/></td>
-                </tr>
-            </tbody>
-        </table> -->
-        <!-- <table width="100%">
-            <tr>
-                <td>
-                    <p style="color: blue !important; font-size: 6px !important;"><span t-esc="o.po_id.company_id.name"/></p>
-                </td>
-                <td>
-                    <span t-esc="o.po_id.company_id.name"/>
-                </td>
-            </tr>
-        </table> -->
     </div>
 </template>
 
 <template id="contract_footer">
     <div class="footer">
-        <!-- <table width="100%">
-            <tr>
-                <td class="text-center" style="font-size: 12px;">
-                    <span><span t-esc="company.name"/>, <span t-esc="company.street"/>, <span t-esc="company.street2"/>, <span t-esc="company.city"/>, <span t-esc="company.state_id.name"/>, <span t-esc="company.country_id.name"/></span><br/>
-                    <span>Phones: <span style="margin-right:2px;" t-esc="company.phone"/></span>
-                    <span>Email: <span style="margin-right:2px; color:#0f92e7;" t-esc="company.email"/> Web: <span t-esc="company.website" style="color:#0f92e7; margin-left:2px;"/></span>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center" style="font-size: 13px;padding:5px 20px; font-style:italic;">
-                    Company is Registered &amp; Licensed as a limited liability company under the laws of the Islamic Republic of Afghanistan
-                </td>
-            </tr>
-        </table> -->
     </div>
 </template>
 
@@ -110,97 +64,67 @@
                     td {
                         padding: 5px;
                     }
+                    .bold-text {
+                        font-family:Arial, sans-serif; 
+                        font-weight:bold;
+                    }
+                 </style>
 
-            </style>
-
-                <h4 class="text-center" >BIDS CHECKLIST SUMMARY SHEET</h4>
+                <h3 class="text-center" >BIDS CHECKLIST SUMMARY SHEET</h3>
                 <br/>
                 <br/>
+                
                 <table style="width: 100%">
-
                     <tbody>
                         <tr>
-                            <td><span class="mr-3">Requisition Ref: </span><span t-esc="o.name"/></td>
-                            <td class="text-right"><span class="mr-3">Purchase Comittee:</span><span t-esc="o.panel_id.name"/></td>
+                            <td><span class="mr-3 bold-text">Requisition Ref: </span><span t-esc="o.name"/></td>
+                            <td class="text-right"><span class="mr-3 bold-text">Agreement Deadline: </span><span t-esc="o.date_end"/></td>
                         </tr>
                         <tr>
-                            <td class="text-right"><span class="mr-3"></span><span /></td>
-                            <td class="text-right"><span class="mr-3">Agreement Deadline: </span><span t-esc="o.date_end"/></td>
+                            <td ><span class="mr-3 bold-text">Purchase Comittee:</span><span t-esc="o.panel_id.name"/></td>
+                            <td ><span class="mr-3"></span><span /></td>
                         </tr>
-                        
                     </tbody>
                 </table>
                 <br/>
 
                 <!-- <h5>Bid Evaluation</h5> -->
           
-            <table style="width: 100%; white-space: wrap; table-layout: fixed;">
-                <tbody>
-                    
-                    <t t-set="titles_list" t-value="o.get_checklist_summary_titles()"/>
-                    <tr >
-                        <td style="width: 15%;"><span />Criteria:</td>
-                        <t t-foreach="titles_list" t-as="title">
-                            <td><span style="text-transform: capitalize ;" t-esc="title"/></td>
+                <table style="width: 100%; white-space: wrap; table-layout: fixed;" class="has-border">
+                    <tbody class="has-border">
+                        <t t-set="titles_list" t-value="o.get_checklist_summary_titles()"/>
+                        <tr class="has-border">
+                            <td style="text-align:center; width: 15%;" class="has-border bold-text"><span />Vendor</td>
+                            <t t-foreach="titles_list" t-as="title">
+                                <td style="text-align:center;" class="has-border bold-text"><span style="text-transform: capitalize ;" t-esc="title"/></td>
+                            </t>
+                        </tr>
+
+                        <t t-set="bidders_list" t-value="o.get_checklist_summary_lines()"/>
+                        <t t-foreach="bidders_list" t-as="bidder">
+                            <tr class="has-border">
+                                <td class="has-border"><span t-esc="bidder[0]"/></td>
+                                <t t-foreach="bidder[1]" t-as="checklist_item">
+                                    <td style="text-align:center;" class="has-border"><span style="text-transform: capitalize; text-align: center;" t-esc="checklist_item_value"/></td>
+                                </t>
+                            </tr>
                         </t>
 
-                    </tr>
-
-                    <t t-set="bidders_list" t-value="o.get_checklist_summary_lines()"/>
-                    <t t-foreach="bidders_list" t-as="bidder">
-                        <tr >
-                            <td><span t-esc="bidder[0]"/></td>
-                            <t t-foreach="bidder[1]" t-as="checklist_item">
-                                <td style="text-align:center;"><span style="text-transform: capitalize; text-align: center;" t-esc="checklist_item_value"/></td>
-                            </t>
-                        </tr>
-                    </t>
-                </tbody>
-            </table>
-
-             <!-- <t t-set="all_vals" t-value="o.checklist_summary_lines()" />
-                <t t-foreach="all_vals" t-as="doc">
-                    <span t-esc="doc"/>
-                    <br/>
-                    <span t-esc="doc_value"/>
-                    <br/>
-                </t>  -->
-                
-                <!-- <table class="table table-sm">
-                    <thead>
-                        <tr style="background:#f3f5f2">
-                            <th >Item</th>
-                            <th>Available</th>
-                        </tr>
-                    </thead>
+                    </tbody>
+                </table>
+                <br/>
+                <br/>
+                <p class="bold-text">Purchase Comittee:</p>
+                <table class="">
                     <tbody>
-                        <tr t-foreach="o.checklist_item_ids" t-as="item">
-                            <td><span t-esc="item.name"/></td>
-                            <td><span t-esc="o.get_checklist_status(item.item_clear)"/></td>
+                        <tr t-foreach="o.panel_id.member_ids" t-as="member">
+                            <td><span t-esc="member.name"/></td>
                         </tr>
                     </tbody>
-                </table> -->
-                
-
-                <!-- <table class="table table-sm">
-                        <tr  style="background:#f3f5f2">
-                            <th>Bidder</th>
-                        </tr>
-                        <tr t-foreach="o.checklist_summary_lines()" t-as="evaluation">
-                            <td><span t-esc="evaluation.partner_id.name"/></td>
-                            <t t-foreach="evaluation.checklist_item_ids" t-as="item">
-                                <td><span t-esc="item.name"/></td>
-                                <td><span t-esc="item.item_clear"/></td>
-                            </t>
-                        </tr>
-                        
-
-                </table> -->
+                </table>
                 <br/>
 
-        
-            <br/>
-        </div> 
+            </div> 
         </t>
     </t>
 </template> 
