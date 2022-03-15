@@ -34,6 +34,7 @@
         'views/bid_evaluation.xml',
         'views/purchase_order.xml',
         'reports/bid_evaluation_report.xml',
+        'reports/bids_checklist_summary.xml',
     ],
     # 'images': ["static/description/banner-v15.png"],
     'license': 'LGPL-3',

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from tabnanny import check
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -10,8 +11,121 @@ class PurchaseRequisition(models.Model):
     enable_panel = fields.Boolean('Enable Panel Committee', compute='_check_for_purchase_panel')
     eval_template_id = fields.Many2one('bid.evaluation.template', string="Bid Evaluation Template")
 
-   
+    def get_bid_evaluations(self):
+        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
+        return evaluation_records
 
+    def get_checklist_summary_titles(self):
+
+        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
+        return sorted(list(set(evaluation_records.mapped('checklist_item_ids.name'))))
+    
+    def get_checklist_summary_lines(self):
+
+        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
+        checklist_item_names = sorted(list(set(evaluation_records.mapped('checklist_item_ids.name'))))
+        
+        checklist_l = []
+        for rec in evaluation_records:
+            bidder_list = []
+            bidder_list.append(rec.partner_id.name)
+            partner_dict = {}
+            if len(rec.checklist_item_ids) == 0:
+                for name in checklist_item_names:
+                    partner_dict[name] = 'N/A'
+            else:
+                for checklist_title in checklist_item_names:
+                    for line in rec.checklist_item_ids:
+                        if line.name == checklist_title:
+                            partner_dict[line.name] = line.item_clear
+                        else:
+                            if line.name not in partner_dict:
+                                partner_dict[line.name] = 'n/a'
+            for title in checklist_item_names:
+                if title not in partner_dict:
+                    partner_dict[title] = 'n/a'
+
+            # sorted_partner_dict = {}
+            sorted_partner_dict = {key: value for key, value in sorted(partner_dict.items())}
+
+            bidder_list.append(sorted_partner_dict)
+            checklist_l.append(bidder_list)
+        
+                                        # print(checklist_l)
+
+                                    #    checklist_summary_lines = [
+                                    #        ['deco addict',{
+                                    #            'Business License': 'yes',
+                                    #            'Technical Proposal Submitted': 'no',
+                                    #            'Bid Security': 'yes',
+                                    #            'Financial Capability': 'yes'}, 
+                                    #        ],
+                                    #        ['lumber inc',{
+                                    #            'Business License': 'yes',
+                                    #            'Technical Proposal Submitted': 'no',
+                                    #            'Bid Security': 'yes',
+                                    #            'Financial Capability': 'yes'}, 
+                                    #        ],
+                                    #    ]
+        return checklist_l
+
+    
+    def generate_summary_sheet(self):
+        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
+        checklist_item_names = list(set(evaluation_records.mapped('checklist_item_ids.name')))
+        
+        checklist_l = []
+        for rec in evaluation_records:
+            bidder_list = []
+            bidder_list.append(rec.partner_id.name)
+            partner_dict = {}
+            if len(rec.checklist_item_ids) == 0:
+                for name in checklist_item_names:
+                    partner_dict[name] = 'N/A'
+            else:
+                for checklist_title in checklist_item_names:
+                    for line in rec.checklist_item_ids:
+                        if line.name == checklist_title:
+                            partner_dict[line.name] = line.item_clear
+                        else:
+                            if line.name not in partner_dict:
+                                partner_dict[line.name] = 'n/a'
+            for title in checklist_item_names:
+                if title not in partner_dict:
+                    partner_dict[title] = 'n/a'
+            print('unsorted partner_dict..',partner_dict)
+            sorted_partner_dict = {}
+            sorted_partner_dict = {key: value for key, value in sorted(partner_dict.items())}
+            # sorted_partner_dict = {k: v for k, v in sorted(partner_dict.items(), key=lambda item: item[1])}
+            print('Now sorted partner_dict..',sorted_partner_dict)
+
+                                                # for item in rec.checklist_item_ids:
+                                                #     for name in checklist_item_names:
+                                                #         if name in item.name:
+                                                #             partner_dict[name] = item.item_clear
+                                                        # else:
+                                                        #     partner_dict[name] = 'N/A'
+            bidder_list.append(sorted_partner_dict)
+            checklist_l.append(bidder_list)
+        
+        print(checklist_l)
+
+
+
+        
+
+            
+
+
+    
+    def get_checklist_status(self, status):
+        if status == 'yes':
+            return 'Yes'
+        else:
+            return 'No'
+
+
+    
     def action_done(self):
         self.activity_unlink(['ak_purchase_agreement_panel.mail_purchase_panel_member_notification'])
         return super(PurchaseRequisition,self).action_done()

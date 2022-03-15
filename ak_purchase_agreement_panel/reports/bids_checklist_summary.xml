@@ -2,12 +2,12 @@
     <odoo>
         
     <report 
-    id="action_print_contracts"
-    model="bid.evaluation"
-    string="Print Contract"
+    id="action_print_checklist_summary"
+    model="purchase.requisition"
+    string="Print Bids Checklist Summary"
     report_type="qweb-pdf"
-    name="ak_purchase_agreement_panel.contracts_template"
-    file="ak_purchase_agreement_panel.contracts_template"
+    name="ak_purchase_agreement_panel.bids_checklist_template"
+    file="ak_purchase_agreement_panel.bids_checklist_template"
     print_report_name="'Contract - %s' % (object.name)"
 />
 
@@ -15,7 +15,7 @@
     <field name="name">Contract Details Paper Format</field>
     <field name="default" eval="True" />
     <field name="format">A4</field>
-    <field name="orientation">Portrait</field>
+    <field name="orientation">Landscape</field>
     <field name="margin_top">20</field>
     <field name="margin_bottom">20</field>
     <field name="margin_left">15</field>
@@ -25,7 +25,7 @@
     <field name="dpi">100</field>
 </record>
 
-<record id="action_print_contracts" model="ir.actions.report">
+<record id="action_print_checklist_summary" model="ir.actions.report">
     <field name="paperformat_id" ref="ak_purchase_agreement_panel.paperformat_contracts"/>
 </record>
 
@@ -98,97 +98,107 @@
     </div>
 </template>
 
-<template id="bid_evaluation_sheet_template">
+<template id="bids_checklist_summary_template">
     <t t-call="web.basic_layout">
         <t t-call="ak_purchase_agreement_panel.bid_main_info">
             <div class="page" >
-                <h4 class="text-center" >BID EVALUATION SHEET</h4>
+                <style>
+                    .has-border {
+                        border: 1px solid black;
+                      }
+                    
+                    td {
+                        padding: 5px;
+                    }
+
+            </style>
+
+                <h4 class="text-center" >BIDS CHECKLIST SUMMARY SHEET</h4>
                 <br/>
-                <table class="table table-sm">
+                <br/>
+                <table style="width: 100%">
 
                     <tbody>
                         <tr>
-                            <td><span class="mr-3">Bid Ref: </span><span t-esc="o.po_id.name"/></td>
-                            <td><span class="mr-3">Requisition Ref: </span><span t-esc="o.purchase_requisition_id.name"/></td>
+                            <td><span class="mr-3">Requisition Ref: </span><span t-esc="o.name"/></td>
+                            <td class="text-right"><span class="mr-3">Purchase Comittee:</span><span t-esc="o.panel_id.name"/></td>
                         </tr>
                         <tr>
-                            <td><span class="mr-3">Vendor:</span><span t-esc="o.partner_id.name"/></td>
-                            <td><span class="mr-4">Bid Opening:</span><span t-esc="o.deadline"/></td>
+                            <td class="text-right"><span class="mr-3"></span><span /></td>
+                            <td class="text-right"><span class="mr-3">Agreement Deadline: </span><span t-esc="o.date_end"/></td>
                         </tr>
+                        
                     </tbody>
                 </table>
                 <br/>
 
-                <div>
-                    <h5>Evaluation Guidelines</h5>
-                    <p class="mr-2"><span t-esc="o.evaluation_guidelines"/></p>
-                </div>
-                <br/>
-                <div>
-                    <h5>Evaluation Approach</h5>
-                    <p><span t-esc="o.evaluation_approach_description"/></p>
-                </div>
+                <!-- <h5>Bid Evaluation</h5> -->
           
-            <br/>   
-
-            
-            <h5>Bid Checklist</h5>
-            <table class="table table-sm">
-                <thead>
-                    <tr style="background:#f3f5f2">
-                        <th >Item</th>
-                        <th>Available</th>
-                    </tr>
-                </thead>
+            <table style="width: 100%; white-space: wrap; table-layout: fixed;">
                 <tbody>
-                    <tr t-foreach="o.checklist_item_ids" t-as="item">
-                        <td><span t-esc="item.name"/></td>
-                        <td><span style="text-transform: capitalize;" t-esc="item.item_clear"/></td>
+                    
+                    <t t-set="titles_list" t-value="o.get_checklist_summary_titles()"/>
+                    <tr >
+                        <td style="width: 15%;"><span />Criteria:</td>
+                        <t t-foreach="titles_list" t-as="title">
+                            <td><span style="text-transform: capitalize ;" t-esc="title"/></td>
+                        </t>
+
                     </tr>
+
+                    <t t-set="bidders_list" t-value="o.get_checklist_summary_lines()"/>
+                    <t t-foreach="bidders_list" t-as="bidder">
+                        <tr >
+                            <td><span t-esc="bidder[0]"/></td>
+                            <t t-foreach="bidder[1]" t-as="checklist_item">
+                                <td style="text-align:center;"><span style="text-transform: capitalize; text-align: center;" t-esc="checklist_item_value"/></td>
+                            </t>
+                        </tr>
+                    </t>
                 </tbody>
             </table>
-            <br/>
 
-            <h5>Bid Evaluation</h5>
-            <table class="table table-sm">
-                <thead>
-                    <tr  style="background:#f3f5f2">
-                        <th>Question/Criteria</th>
-                        <th>Score</th>
-                        <th>Remarks (if any)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr t-foreach="o.question_ids" t-as="question">
-                        <td><span t-esc="question.name"/></td>
-                        <td><span t-esc="question.score"/></td>
-                        <td><span t-esc="question.remarks"/></td>
-                    </tr>
-                </tbody>
-            </table>
-            <br/>
+             <!-- <t t-set="all_vals" t-value="o.checklist_summary_lines()" />
+                <t t-foreach="all_vals" t-as="doc">
+                    <span t-esc="doc"/>
+                    <br/>
+                    <span t-esc="doc_value"/>
+                    <br/>
+                </t>  -->
+                
+                <!-- <table class="table table-sm">
+                    <thead>
+                        <tr style="background:#f3f5f2">
+                            <th >Item</th>
+                            <th>Available</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.checklist_item_ids" t-as="item">
+                            <td><span t-esc="item.name"/></td>
+                            <td><span t-esc="o.get_checklist_status(item.item_clear)"/></td>
+                        </tr>
+                    </tbody>
+                </table> -->
+                
 
-            <div>
-                <h5>Notes</h5>
-                <p><span t-esc="o.notes"/></p>
-            </div>
-            <br/>
+                <!-- <table class="table table-sm">
+                        <tr  style="background:#f3f5f2">
+                            <th>Bidder</th>
+                        </tr>
+                        <tr t-foreach="o.checklist_summary_lines()" t-as="evaluation">
+                            <td><span t-esc="evaluation.partner_id.name"/></td>
+                            <t t-foreach="evaluation.checklist_item_ids" t-as="item">
+                                <td><span t-esc="item.name"/></td>
+                                <td><span t-esc="item.item_clear"/></td>
+                            </t>
+                        </tr>
+                        
 
-            <h5>Purchase Comittee</h5>
-            <table class="table table-sm">
-                <thead>
-                    <tr  style="background:#f3f5f2">
-                        <th>Member</th>
-                        <th>Approved on</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr t-foreach="o.bid_approver_ids" t-as="approver">
-                        <td><span t-esc="approver.user_id.name"/></td>
-                        <td><span t-esc="approver.approval_date"/></td>
-                    </tr>
-                </tbody>
-            </table>
+                </table> -->
+                <br/>
+
+        
             <br/>
         </div> 
         </t>
@@ -196,10 +206,10 @@
 </template> 
 
  
-    <template id="contracts_template">
+    <template id="bids_checklist_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-call="ak_purchase_agreement_panel.bid_evaluation_sheet_template"/>
+                <t t-call="ak_purchase_agreement_panel.bids_checklist_summary_template"/>
             </t>
         </t>
     </template>
