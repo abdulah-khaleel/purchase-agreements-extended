@@ -14,7 +14,7 @@
     'summary': "Panel Members can evaluate quotations and participate in bid selection",   
     'description': """
         This app extends on the purchase agreement workflow by allowing you to setup purchase 
-        panels, and invite panel members to participate in the bids evaluation and selection 
+        panels, and invite panel members to participate in the bids evaluation 
         process. The app also allows setting up evaluation forms that can be selected for a
          particular purchase agreement.  
     """,   
@@ -35,6 +35,7 @@
         'views/purchase_order.xml',
         'reports/bid_evaluation_report.xml',
         'reports/bids_checklist_summary.xml',
+        'reports/bids_evaluation_summary.xml',
     ],
     # 'images': ["static/description/banner-v15.png"],
     'license': 'LGPL-3',

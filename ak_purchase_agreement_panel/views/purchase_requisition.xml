@@ -11,9 +11,6 @@
                 <field name="eval_template_id" attrs="{'invisible': [('enable_panel', '=', False)],'required': [('enable_panel', '=', True),('state','=','in_progress')],'readonly': [('state', 'not in', ['draft','ongoing','in_progress'])]}"/>
                 <field name="enable_panel" invisible="1" />
             </xpath>
-            <xpath expr="//button[@name='action_cancel']" position="after">
-                <button name="generate_summary_sheet" class="oe_highlight" string="Generate Summary Report" type="object"  />
-            </xpath>
         </field>
     </record>
     
@@ -26,21 +23,5 @@
         <field name="name">Bids Evaluation</field>
         <field name="icon">fa-sun-o</field>
     </record>
-    <!-- 
-    <record id="mail_purchase_panel_member_notification" model="mail.activity.type">
-        <field name="name">Purchase Committee Announcement</field>
-        <field name="icon">fa-check-circle</field>
-        <field name="sequence">4</field>
-        <field name="res_model_id" ref="purchase_requisition.model_purchase_requisition"/>
-    </record> -->
-
-    <!-- <record id="mail_purchase_panel_member_notification" model="mail.template">
-        <field name="name">Test Invite purchase</field>
-        <field name="subject">Call for Written Test</field>
-        <field name="model">purchase_requisition</field>
-        <field name="model_id" ref="model_purchase_requisition"/>
-        <field name="auto_delete" eval="False"/>
-        <field name="body_html"> </field>
-    </record> -->
 
 </odoo>

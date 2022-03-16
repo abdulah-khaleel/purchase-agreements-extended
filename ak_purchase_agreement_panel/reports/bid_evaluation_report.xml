@@ -2,13 +2,13 @@
     <odoo>
         
     <report 
-    id="action_print_contracts"
+    id="action_print_bid_eval_sheet"
     model="bid.evaluation"
     string="Bid Evaluation Sheet"
     report_type="qweb-pdf"
-    name="ak_purchase_agreement_panel.contracts_template"
-    file="ak_purchase_agreement_panel.contracts_template"
-    print_report_name="'Contract - %s' % (object.name)"
+    name="ak_purchase_agreement_panel.bid_evaluation_sheet_report_template"
+    file="ak_purchase_agreement_panel.bid_evaluation_sheet_report_template"
+    print_report_name="(object.name)"
 />
 
 <record id="paperformat_bid_eval_sheet" model="report.paperformat">
@@ -25,11 +25,11 @@
     <field name="dpi">100</field>
 </record>
 
-<record id="action_print_contracts" model="ir.actions.report">
+<record id="action_print_bid_eval_sheet" model="ir.actions.report">
     <field name="paperformat_id" ref="ak_purchase_agreement_panel.paperformat_bid_eval_sheet"/>
 </record>
 
-<template id="bid_main_info">
+<template id="bid_eval_sheet_main_info">
     <t t-if="o and 'company_id' in o">
         <t t-set="company" t-value="o.company_id"></t>
     </t>
@@ -37,26 +37,26 @@
         <t t-set="company" t-value="res_company"></t>
     </t>
     
-    <t t-call="ak_purchase_agreement_panel.contract_header" />
+    <t t-call="ak_purchase_agreement_panel.bid_eval_sheet_header" />
     <t t-raw="0" />
-    <t t-call="ak_purchase_agreement_panel.contract_footer"/>
+    <t t-call="ak_purchase_agreement_panel.bid_eval_sheet_footer"/>
 </template>
 
-<template id="contract_header">
+<template id="bid_eval_sheet_header">
     <div class="header">
- 
+  
     </div>
 </template>
 
-<template id="contract_footer">
+<template id="bid_eval_sheet_footer">
     <div class="footer">
- 
+
     </div>
 </template>
 
 <template id="bid_evaluation_sheet_template">
     <t t-call="web.basic_layout">
-        <t t-call="ak_purchase_agreement_panel.bid_main_info">
+        <t t-call="ak_purchase_agreement_panel.bid_eval_sheet_main_info">
             <div class="page" >
                 <h4 class="text-center" >BID EVALUATION SHEET</h4>
                 <br/>
@@ -152,7 +152,7 @@
 </template> 
 
  
-    <template id="contracts_template">
+    <template id="bid_evaluation_sheet_report_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="ak_purchase_agreement_panel.bid_evaluation_sheet_template"/>

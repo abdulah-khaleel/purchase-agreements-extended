@@ -32,100 +32,62 @@ class PurchaseRequisition(models.Model):
             partner_dict = {}
             if len(rec.checklist_item_ids) == 0:
                 for name in checklist_item_names:
-                    partner_dict[name] = 'N/A'
+                    partner_dict[name] = 'N/A' 
             else:
                 for checklist_title in checklist_item_names:
                     for line in rec.checklist_item_ids:
                         if line.name == checklist_title:
                             partner_dict[line.name] = line.item_clear
-                        else:
-                            if line.name not in partner_dict:
-                                partner_dict[line.name] = 'n/a'
             for title in checklist_item_names:
                 if title not in partner_dict:
-                    partner_dict[title] = 'n/a'
+                    partner_dict[title] = 'N/A'
 
             # sorted_partner_dict = {}
             sorted_partner_dict = {key: value for key, value in sorted(partner_dict.items())}
 
             bidder_list.append(sorted_partner_dict)
             checklist_l.append(bidder_list)
-        
-                                        # print(checklist_l)
 
-                                    #    checklist_summary_lines = [
-                                    #        ['deco addict',{
-                                    #            'Business License': 'yes',
-                                    #            'Technical Proposal Submitted': 'no',
-                                    #            'Bid Security': 'yes',
-                                    #            'Financial Capability': 'yes'}, 
-                                    #        ],
-                                    #        ['lumber inc',{
-                                    #            'Business License': 'yes',
-                                    #            'Technical Proposal Submitted': 'no',
-                                    #            'Bid Security': 'yes',
-                                    #            'Financial Capability': 'yes'}, 
-                                    #        ],
-                                    #    ]
         return checklist_l
-
     
-    def generate_summary_sheet(self):
+    def get_evaluation_questions(self):
+
         evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
-        checklist_item_names = list(set(evaluation_records.mapped('checklist_item_ids.name')))
+        return sorted(list(set(evaluation_records.mapped('question_ids.name'))))
+
+    def get_evaluation_summary_lines(self):
+
+        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
+        question_titles = sorted(list(set(evaluation_records.mapped('question_ids.name'))))
         
-        checklist_l = []
+        eval_list = []
         for rec in evaluation_records:
             bidder_list = []
             bidder_list.append(rec.partner_id.name)
             partner_dict = {}
-            for checklist_title in checklist_item_names:
-                for line in rec.checklist_item_ids:
-                    if line.name == checklist_title:
-                        partner_dict[line.name] = line.item_clear
-                    else:
-                        if line.name not in partner_dict:
-                            partner_dict[line.name] = 'n/a'
-            for title in checklist_item_names:
+            if len(rec.question_ids) == 0:
+                for name in question_titles:
+                    partner_dict[name] = 'N/A'
+            else:
+                for question in question_titles:
+                    for line in rec.question_ids:
+                        if line.name == question:
+                            partner_dict[line.name] = line.score
+            for title in question_titles:
                 if title not in partner_dict:
-                    partner_dict[title] = 'n/a'
-            print('unsorted partner_dict..',partner_dict)
-            sorted_partner_dict = {}
+                    partner_dict[title] = 'n/a - 2'
+
+            # sorted_partner_dict = {}
             sorted_partner_dict = {key: value for key, value in sorted(partner_dict.items())}
-            # sorted_partner_dict = {k: v for k, v in sorted(partner_dict.items(), key=lambda item: item[1])}
-            print('Now sorted partner_dict..',sorted_partner_dict)
 
-                                                # for item in rec.checklist_item_ids:
-                                                #     for name in checklist_item_names:
-                                                #         if name in item.name:
-                                                #             partner_dict[name] = item.item_clear
-                                                        # else:
-                                                        #     partner_dict[name] = 'N/A'
             bidder_list.append(sorted_partner_dict)
-            checklist_l.append(bidder_list)
-        
-        print(checklist_l)
+            eval_list.append(bidder_list)
 
-
-
-        
-
-            
-
-
-    
-    def get_checklist_status(self, status):
-        if status == 'yes':
-            return 'Yes'
-        else:
-            return 'No'
-
-
+        return eval_list
     
     def action_done(self):
         self.activity_unlink(['ak_purchase_agreement_panel.mail_purchase_panel_member_notification'])
         return super(PurchaseRequisition,self).action_done()
-
     
     def action_open(self):
         if self.type_id.enable_comittee_evaluation:
