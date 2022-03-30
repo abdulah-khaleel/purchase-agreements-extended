@@ -23,8 +23,8 @@
                     </div>
                         <group string="Sections">
                             <group>
-                                <field name="evaluation_approach" />
-                                <field name="scorable" />
+                                <field name="evaluation_approach" invisible="1" />
+                                <!-- <field name="scorable" /> -->
                                 <field name="score_limit" />
                             </group><group></group>
                         </group>

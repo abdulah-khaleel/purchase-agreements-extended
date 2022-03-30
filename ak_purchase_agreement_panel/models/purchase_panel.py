@@ -18,5 +18,3 @@ class PurchasePanel(models.Model):
             if not member.has_group('ak_purchase_agreement_panel.group_purchase_panel_member'):
                 member.write({'groups_id': [(4, self.env.ref('ak_purchase_agreement_panel.group_purchase_panel_member').id)]})
         return res
-        
-

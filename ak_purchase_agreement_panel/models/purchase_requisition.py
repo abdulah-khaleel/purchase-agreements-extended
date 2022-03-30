@@ -7,9 +7,9 @@ from odoo.exceptions import ValidationError
 class PurchaseRequisition(models.Model):
     _inherit = "purchase.requisition"
 
-    panel_id = fields.Many2one('purchase.panel', string="Purchase Comittee")
     enable_panel = fields.Boolean('Enable Panel Committee', compute='_check_for_purchase_panel')
-    eval_template_id = fields.Many2one('bid.evaluation.template', string="Bid Evaluation Template")
+    panel_id = fields.Many2one('purchase.panel', string="Purchase Comittee", ondelete="restrict")
+    eval_template_id = fields.Many2one('bid.evaluation.template', string="Bid Evaluation Template", ondelete="restrict")
 
     def get_bid_evaluations(self):
         evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
@@ -53,7 +53,9 @@ class PurchaseRequisition(models.Model):
     def get_evaluation_questions(self):
 
         evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
-        return sorted(list(set(evaluation_records.mapped('question_ids.name'))))
+        question_titles = sorted(list(set(evaluation_records.mapped('question_ids.name'))))
+        question_titles.append('Average Score')
+        return question_titles
 
     def get_evaluation_summary_lines(self):
 
@@ -67,7 +69,7 @@ class PurchaseRequisition(models.Model):
             partner_dict = {}
             if len(rec.question_ids) == 0:
                 for name in question_titles:
-                    partner_dict[name] = 'N/A'
+                    partner_dict[name] = ' - '
             else:
                 for question in question_titles:
                     for line in rec.question_ids:
@@ -75,11 +77,12 @@ class PurchaseRequisition(models.Model):
                             partner_dict[line.name] = line.score
             for title in question_titles:
                 if title not in partner_dict:
-                    partner_dict[title] = 'n/a - 2'
+                    partner_dict[title] = ' - '
 
             # sorted_partner_dict = {}
             sorted_partner_dict = {key: value for key, value in sorted(partner_dict.items())}
-
+            print(sorted_partner_dict)
+            sorted_partner_dict['Average Score'] = rec.score_avg
             bidder_list.append(sorted_partner_dict)
             eval_list.append(bidder_list)
 

@@ -19,6 +19,7 @@ class BidEvaluation(models.Model):
     evaluation_guidelines = fields.Text('Evaluation Guidelines')
     evaluation_approach_description = fields.Text('Evaluation Approach')
     score_limit = fields.Integer('Highest Score')
+    score_avg = fields.Float('Average Score', compute="_compute_score_avg")
     notes = fields.Text('Notes')
     checklist_item_ids = fields.One2many('bid.evaluation.checklist','bid_evaluation_id', string="Evaluation Checklist")
     question_ids = fields.One2many('bid.evaluation.question', 'bid_evaluation_id', string="Bid Evaluation Questions")
@@ -100,6 +101,15 @@ class BidEvaluation(models.Model):
             return 'Yes'
         else:
             return 'No'
+    
+    @api.depends('question_ids.score')
+    def _compute_score_avg(self):
+        for rec in self:
+            scores = rec.question_ids.mapped('score')
+            if len(scores) != 0:
+                rec.score_avg = sum(scores) / len(scores)
+            else:
+                rec.score_avg = 0
 
     
     @api.depends('question_ids.name')

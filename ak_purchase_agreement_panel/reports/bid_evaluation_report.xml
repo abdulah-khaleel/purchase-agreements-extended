@@ -58,6 +58,15 @@
     <t t-call="web.basic_layout">
         <t t-call="ak_purchase_agreement_panel.bid_eval_sheet_main_info">
             <div class="page" >
+                <style>
+                    .has-border {
+                        border: 1px solid black;
+                      }
+                    .bold-text {
+                        font-family:Arial, sans-serif; 
+                        font-weight:bold;
+                    }
+                 </style>
                 <h4 class="text-center" >BID EVALUATION SHEET</h4>
                 <br/>
                 <table class="table table-sm">
@@ -120,15 +129,22 @@
                         <td><span t-esc="question.score"/></td>
                         <td><span t-esc="question.remarks"/></td>
                     </tr>
+                    <!-- <tr style="background:#f3f5f2">
+                        <td>Average Score</td>
+                        <td><span t-esc="o.score_avg"/></td>
+                        <td></td>
+                    </tr> -->
                 </tbody>
             </table>
+            <p class="text-right" style="font-family:Arial; font-weight:bold">Average Score: <span t-esc="o.score_avg"/></p>
+
             <br/>
 
             <div>
                 <h5>Notes</h5>
                 <p><span t-esc="o.notes"/></p>
             </div>
-            <br/>
+            <br/>  <br/>
 
             <h5>Purchase Comittee</h5>
             <table class="table table-sm">
