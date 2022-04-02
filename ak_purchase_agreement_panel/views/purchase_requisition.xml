@@ -13,6 +13,14 @@
             </xpath>
         </field>
     </record>
+
+    <record id="open_agreement_bid_evaluations" model="ir.actions.act_window">
+        <field name="name">Bid Evaluations</field>
+        <field name="res_model">bid.evaluation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('purchase_requisition_id', '=', active_id)]</field>
+        <field name="binding_model_id" ref="model_purchase_requisition"/>
+    </record>
     
     <record id="mail_bid_panel_member_evaluation_notification" model="mail.activity.type">
         <field name="name">Bids Evaluation</field>
