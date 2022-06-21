@@ -16,7 +16,7 @@
     <field name="default" eval="True" />
     <field name="format">A4</field>
     <field name="orientation">Portrait</field>
-    <field name="margin_top">20</field>
+    <field name="margin_top">5</field>
     <field name="margin_bottom">20</field>
     <field name="margin_left">15</field>
     <field name="margin_right">15</field>
@@ -67,7 +67,14 @@
                         font-weight:bold;
                     }
                  </style>
-                <h4 class="text-center" >BID EVALUATION SHEET</h4>
+                 <table class="mb-5">
+                    <tbody>
+                        <tr>
+                            <td><span t-esc="o.purchase_requisition_id.company_id.name"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                 <h4 class="text-center mt-16" >BID EVALUATION SHEET</h4>
                 <br/>
                 <table class="table table-sm">
 
@@ -89,10 +96,10 @@
                     <p class="mr-2"><span t-esc="o.evaluation_guidelines"/></p>
                 </div>
                 <br/>
-                <div>
+                <!-- <div>
                     <h5>Evaluation Approach</h5>
                     <p><span t-esc="o.evaluation_approach_description"/></p>
-                </div>
+                </div> -->
           
             <br/>   
 

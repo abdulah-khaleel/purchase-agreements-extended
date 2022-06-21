@@ -77,7 +77,13 @@
                         font-weight:bold;
                     }
                  </style>
-
+                 <table class="mb-3">
+                    <tbody>
+                        <tr>
+                            <td><span t-esc="o.company_id.name"/></td>
+                        </tr>
+                    </tbody>
+                </table>
                 <h3 class="text-center" >BIDS EVALUATION SUMMARY</h3>
                 <br/>
                 <br/>

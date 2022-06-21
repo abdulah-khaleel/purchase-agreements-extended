@@ -16,14 +16,16 @@
     <field name="default" eval="True" />
     <field name="format">A4</field>
     <field name="orientation">Landscape</field>
-    <field name="margin_top">20</field>
+    <field name="margin_top">30</field>
     <field name="margin_bottom">20</field>
     <field name="margin_left">15</field>
     <field name="margin_right">15</field>
     <field name="header_line" eval="False" />
     <field name="header_spacing">20</field>
     <field name="dpi">120</field>
-</record>
+</record> 
+
+
 
 <record id="action_print_checklist_summary" model="ir.actions.report">
     <field name="paperformat_id" ref="ak_purchase_agreement_panel.paperformat_checklist_summary"/>
@@ -44,6 +46,16 @@
 
 <template id="bid_checklist_sum_header">
     <div class="header">
+        <div class="header" style=" height: 100px !important;">
+            <div style="display:flex; flex-direction:row;">    
+                <div class="col-left">
+                    <p>  <span t-esc="o.company_id.name"/></p>
+                </div>
+                <div class="col-left">
+                    <p><span class="mr-3 bold-text">Requisition Ref: </span><span t-esc="o.name"/></p>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -69,7 +81,13 @@
                         font-weight:bold;
                     }
                  </style>
-
+                 <!-- <table class="mb-3">
+                    <tbody>
+                        <tr>
+                            <td><span t-esc="o.company_id.name"/></td>
+                        </tr>
+                    </tbody>
+                </table> -->
                 <h3 class="text-center" >BIDS CHECKLIST SUMMARY SHEET</h3>
                 <br/>
                 <br/>
