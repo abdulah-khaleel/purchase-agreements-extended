@@ -49,9 +49,7 @@
 
                     <group string="Evaluation Info">
                         <group>
-                            <field name="evaluation_approach" invisible="1"/>
                             <field name="evaluation_guidelines" attrs="{'readonly':[('state','in',['to_approve','done','cancel'])]}"/>
-                            <field name="evaluation_approach_description" attrs="{'readonly':[('state','in',['to_approve','done','cancel'])]}"/>
                             <field name="score_limit" invisible="1"/>
                         </group>
                         <group>

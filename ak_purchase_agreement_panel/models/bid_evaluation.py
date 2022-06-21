@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 
@@ -15,9 +15,7 @@ class BidEvaluation(models.Model):
     po_id = fields.Many2one('purchase.order', 'RFQ')
     partner_id = fields.Many2one('res.partner',  string="Vendor")
     deadline = fields.Date(string="Deadline", default = lambda self: self.po_id.date_order)
-    evaluation_approach = fields.Boolean('Allow Evaluation Approach')
     evaluation_guidelines = fields.Text('Evaluation Guidelines')
-    evaluation_approach_description = fields.Text('Evaluation Approach')
     score_limit = fields.Integer('Highest Score')
     score_avg = fields.Float('Average Score', compute="_compute_score_avg")
     notes = fields.Text('Notes')
@@ -33,13 +31,13 @@ class BidEvaluation(models.Model):
     user_status = fields.Selection([
         ('pending', 'To Approve'),
         ('approved', 'Approved'),
+        ('cancel', 'Cancelled'),
         ], compute="_compute_user_status")
     edit_questions = fields.Selection([
         ('allowed', 'Allowed'),
         ('not_allowed', 'Not Allowed'),
         ], compute="_check_questions_edit_access")
     
-
     
     def get_panel_member_activity(self,user):
         domain = [
@@ -69,9 +67,21 @@ class BidEvaluation(models.Model):
         activitie = self.env['mail.activity'].search(domain)
         activitie.sudo().unlink()
         self.write({'state': 'cancel'})
+        for approval in self.bid_approver_ids:
+            if approval.user_id.id == self.env.user.id:
+                approval.write({
+                    'review_state': 'cancel',
+                    'approval_date': fields.Datetime.now(),
+                    })
+            
 
     def reset_to_draft(self):
         self.write({'state': 'draft'})
+        # reset approval ids status to 'pending':
+        self.bid_approver_ids.write({
+            'review_state': 'pending',
+            'approval_date': False
+            })
 
     
     def submit_evaluation(self):
@@ -82,6 +92,10 @@ class BidEvaluation(models.Model):
                     _(f"Scores should be between 1 and {self.score_limit}. Please make sure that all factors are scored properly and try again."))
         self.create_activity()
         self.write({'state': 'to_approve'})
+        for approval in self.bid_approver_ids:
+            approval.write({
+                'review_state': 'pending'
+                })
 
     def approve_evaluation(self):
         for approver in self.bid_approver_ids:
@@ -101,6 +115,15 @@ class BidEvaluation(models.Model):
             return 'Yes'
         else:
             return 'No'
+
+    def unlink(self):
+        if self.state != 'cancel':
+            raise UserError(
+                        'You can only delete evaluation records that are in a cancelled state.'
+                    )
+        # update related purchase order:
+        self.mapped('po_id').write({'has_evaluation': False})
+        return super(BidEvaluation, self).unlink()
     
     @api.depends('question_ids.score')
     def _compute_score_avg(self):
@@ -173,6 +196,7 @@ class BidPanelMembers(models.Model):
     review_state = fields.Selection([
         ('pending', 'Pending'),
         ('approved', 'Approved'),
+        ('cancel', 'Cancelled'),
         ], default='pending', string="Review Status")
     approval_date = fields.Datetime('Approval Date', readonly=True)
 

@@ -10,6 +10,7 @@ class PurchaseRequisition(models.Model):
     enable_panel = fields.Boolean('Enable Panel Committee', compute='_check_for_purchase_panel')
     panel_id = fields.Many2one('purchase.panel', string="Purchase Comittee", ondelete="restrict")
     eval_template_id = fields.Many2one('bid.evaluation.template', string="Bid Evaluation Template", ondelete="restrict")
+    evaluation_guidelines = fields.Text('Evaluation Guidelines')
 
     def get_bid_evaluations(self):
         evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
@@ -17,12 +18,12 @@ class PurchaseRequisition(models.Model):
 
     def get_checklist_summary_titles(self):
 
-        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
+        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id),('state', '=', 'done')])
         return sorted(list(set(evaluation_records.mapped('checklist_item_ids.name'))))
     
     def get_checklist_summary_lines(self):
 
-        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
+        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id),('state', '=', 'done')])
         checklist_item_names = sorted(list(set(evaluation_records.mapped('checklist_item_ids.name'))))
         
         checklist_l = []
@@ -52,14 +53,14 @@ class PurchaseRequisition(models.Model):
     
     def get_evaluation_questions(self):
 
-        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
+        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id),('state', '=', 'done')])
         question_titles = sorted(list(set(evaluation_records.mapped('question_ids.name'))))
         question_titles.append('Average Score')
         return question_titles
 
     def get_evaluation_summary_lines(self):
 
-        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
+        evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id),('state', '=', 'done')])
         question_titles = sorted(list(set(evaluation_records.mapped('question_ids.name'))))
         
         eval_list = []
@@ -82,7 +83,7 @@ class PurchaseRequisition(models.Model):
             # sorted_partner_dict = {}
             sorted_partner_dict = {key: value for key, value in sorted(partner_dict.items())}
             print(sorted_partner_dict)
-            sorted_partner_dict['Average Score'] = rec.score_avg
+            sorted_partner_dict['Average Score'] = round(rec.score_avg,2)
             bidder_list.append(sorted_partner_dict)
             eval_list.append(bidder_list)
 

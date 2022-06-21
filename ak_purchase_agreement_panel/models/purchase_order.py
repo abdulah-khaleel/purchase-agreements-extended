@@ -31,14 +31,19 @@ class PurchaseOrder(models.Model):
     def get_bid_evaluation_record(self):
         self.ensure_one()
         bid_evaluation_record = self.env['bid.evaluation'].search([('po_id', '=', self.id)])
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Bid Evaluation',
-            'view_mode': 'form',
-            'res_model': 'bid.evaluation',
-            'res_id': bid_evaluation_record.id,
-            'domain': [('po_id', '=', self.id)],
-        }
+        if bid_evaluation_record:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Bid Evaluation',
+                'view_mode': 'form',
+                'res_model': 'bid.evaluation',
+                'res_id': bid_evaluation_record.id,
+                'domain': [('po_id', '=', self.id)],
+            }
+
+    # Run everytime a purchase order is viewed and check if there are any related bid evaluation records, and if not set the field: 'has_evaluation' to False 
+     
+
 
     def create_bid_evaluation(self):
         if not self.requisition_id.eval_template_id or not self.requisition_id.panel_id:
@@ -49,12 +54,12 @@ class PurchaseOrder(models.Model):
             'purchase_requisition_id': self.requisition_id.id,
             'partner_id': self.partner_id.id,
             'deadline': self.date_order,
-            'evaluation_approach': self.requisition_id.eval_template_id.evaluation_approach,
+            'evaluation_guidelines': self.requisition_id.evaluation_guidelines,
             'score_limit': self.requisition_id.eval_template_id.score_limit,
             'checklist_item_ids': self.get_checklist_item_ids(),
             'question_ids': self.get_question_ids()
           })
-        bid_evaluation_record = self.env['bid.evaluation'].search([('po_id', '=', self.id)])
+        # bid_evaluation_record = self.env['bid.evaluation'].search([('po_id', '=', self.id)])
         bid_evaluation_record.sudo().write({
             'bid_approver_ids': self.get_panel_members()
         })
