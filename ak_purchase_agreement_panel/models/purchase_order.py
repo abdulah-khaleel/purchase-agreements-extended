@@ -40,14 +40,12 @@ class PurchaseOrder(models.Model):
                 'res_id': bid_evaluation_record.id,
                 'domain': [('po_id', '=', self.id)],
             }
-
-    # Run everytime a purchase order is viewed and check if there are any related bid evaluation records, and if not set the field: 'has_evaluation' to False 
      
 
 
     def create_bid_evaluation(self):
         if not self.requisition_id.eval_template_id or not self.requisition_id.panel_id:
-            raise UserError(_("Please make sure an evaluation template and a purchase comittee have been set on the requisition of this bid."))
+            raise UserError(_("Please make sure an evaluation template and a purchase committee have been set on the requisition of this bid."))
         bid_evaluation_record = self.env['bid.evaluation'].sudo().create({
             'name': f'Bid Evaluation - {self.requisition_id.name} - {self.partner_id.name}',
             'po_id': self.id,

@@ -8,7 +8,7 @@ class PurchaseRequisition(models.Model):
     _inherit = "purchase.requisition"
 
     enable_panel = fields.Boolean('Enable Panel Committee', compute='_check_for_purchase_panel')
-    panel_id = fields.Many2one('purchase.panel', string="Purchase Comittee", ondelete="restrict")
+    panel_id = fields.Many2one('purchase.panel', string="Purchase Committee", ondelete="restrict")
     eval_template_id = fields.Many2one('bid.evaluation.template', string="Bid Evaluation Template", ondelete="restrict")
     evaluation_guidelines = fields.Text('Evaluation Guidelines')
 
@@ -100,10 +100,10 @@ class PurchaseRequisition(models.Model):
                     self.activity_schedule('ak_purchase_agreement_panel.mail_purchase_panel_member_notification',
                         date_deadline=self.date_end, 
                         user_id = user.id, 
-                        note=f"""As part of the purchae comittee for the agreement: {self.name}, you 
+                        note=f"""As part of the purchae committee for the agreement: {self.name}, you 
                         are requested to navigate to the purchase agreement above and complete the evaluation for each of the bids recieved.""")
             # else:
-            #     raise ValidationError(_('You need to select a Purchase Comittee before validating this agreement.'))
+            #     raise ValidationError(_('You need to select a Purchase Committee before validating this agreement.'))
         return super(PurchaseRequisition,self).action_open()
 
     @api.depends('type_id')

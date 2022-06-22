@@ -77,13 +77,13 @@
                         font-weight:bold;
                     }
                  </style>
-                 <table class="mb-3">
+                 <!-- <table class="mb-3">
                     <tbody>
                         <tr>
                             <td><span t-esc="o.company_id.name"/></td>
                         </tr>
                     </tbody>
-                </table>
+                </table> -->
                 <h3 class="text-center" >BIDS EVALUATION SUMMARY</h3>
                 <br/>
                 <br/>
@@ -95,7 +95,7 @@
                             <td class="text-right"><span class="mr-3 bold-text">Agreement Deadline: </span><span t-esc="o.date_end"/></td>
                         </tr>
                         <tr>
-                            <td ><span class="mr-3 bold-text">Purchase Comittee:</span><span t-esc="o.panel_id.name"/></td>
+                            <td ><span class="mr-3 bold-text">Purchase Committee:</span><span t-esc="o.panel_id.name"/></td>
                             <td ><span class="mr-3"></span><span /></td>
                         </tr>
                     </tbody>
@@ -127,7 +127,7 @@
                 </table>
                 <br/>
                 <br/>
-                <p class="bold-text">Purchase Comittee Members:</p>
+                <p class="bold-text">Purchase Committee Members:</p>
                 <table class="">
                     <tbody>
                         <tr t-foreach="o.panel_id.member_ids" t-as="member">
