@@ -82,12 +82,56 @@ class PurchaseRequisition(models.Model):
 
             # sorted_partner_dict = {}
             sorted_partner_dict = {key: value for key, value in sorted(partner_dict.items())}
-            print(sorted_partner_dict)
             sorted_partner_dict['Average Score'] = round(rec.score_avg,2)
             bidder_list.append(sorted_partner_dict)
             eval_list.append(bidder_list)
 
         return eval_list
+
+    def get_agreement_lines(self):
+        # agreement_lines structure = [['Item A',3.0],['Item B', 4.0],['Item C', 10.0]]
+        agreement_lines = []
+        for line in self.line_ids.sorted(key=lambda r: r.product_id.id):
+            agreement_lines.append([line.product_id.name, line.product_qty])
+        return agreement_lines
+
+    def get_agreement_quotations(self):
+        
+        # Structure of the list of prices:
+        # [
+            # ['Vendor Name', {
+            #     product_id: [Unit Price, Subtotal],
+            #     product_id: [Unit Price, Subtotal],
+            #     }, 
+            # Total Quote Price]
+        # ]
+      
+        quotation_ids = self.env['purchase.order'].search([('requisition_id', '=', self.id)])
+        product_ids = list(set(self.line_ids.mapped('product_id.id')))
+
+        quotations_list = []
+        for quotation in quotation_ids:
+            vendor_list = []
+            vendor_list.append(quotation.partner_id.name)
+            vendor_dict = {}
+            if len(quotation.order_line) == 0:
+                for product_id in product_ids:
+                    vendor_dict[product_id] = ['-','-']
+            else:
+                for product_id in product_ids:
+                    for line in quotation.order_line:
+                        if line.product_id.id == product_id:
+                            vendor_dict[line.product_id.id] = [line.price_unit, line.price_subtotal]
+            for product_id in product_ids:
+                if product_id not in vendor_dict:
+                    vendor_dict[product_id] = ['-','-']
+
+            sorted_vendor_dict = {key: value for key, value in sorted(vendor_dict.items())}
+            vendor_list.append(sorted_vendor_dict)
+            vendor_list.append(quotation.amount_total)
+            quotations_list.append(vendor_list)
+        return quotations_list
+ 
     
     def action_done(self):
         self.activity_unlink(['ak_purchase_agreement_panel.mail_purchase_panel_member_notification'])

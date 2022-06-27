@@ -76,6 +76,31 @@
                         font-family:Arial, sans-serif; 
                         font-weight:bold;
                     }
+                    .mainborder{border:1px solid black;
+                        border-collapse:collapse;
+                        font-size: 16px;
+                        text-align:left;
+                        padding:3px;
+                        color:black;
+                        }
+                    .text-center{
+                                text-align:center;
+                                }
+                    .upper-case {
+                        border-spacing:25px !important;
+                    }
+                    .border{
+                        border:1px solid black !important;
+                        border-collapse:collapse;
+                        padding:10px;
+                        color:black;
+                    }
+                    .less-space{
+                        padding: 3px !important;
+                    }
+                    .text-bold{
+                        font-weight:bolder;
+                    }
                  </style>
                  <!-- <table class="mb-3">
                     <tbody>
@@ -101,47 +126,85 @@
                     </tbody>
                 </table>
                 <br/>
- 
-                <!-- <h5>Bid Evaluation</h5> -->
+
+                <!-- Requested Items -->
                 <!-- <table style="width: 100%; white-space: wrap; table-layout: fixed;" class="has-border">
                     <tbody class="has-border">
-                        <t t-set="questions_list" t-value="o.get_evaluation_questions()"/>
-                        <tr class="has-border">
-                            <td style="text-align:center; width: 15%;" class="has-border bold-text"><span />Vendor</td>
-                            <t t-foreach="questions_list" t-as="question">
-                                <td style="text-align:center;" class="has-border bold-text"><span style="text-transform: capitalize ;" t-esc="question"/></td>
+                        <tr>
+                            <td style="text-align:center; width: 5%;" class="has-border bold-text"><span />#</td>
+                            <td style="text-align:center; width: 35%;" class="has-border bold-text"><span />Product</td>
+                            <td style="text-align:center; width: 35%;" class="has-border bold-text"><span />Description</td>
+                            <td style="text-align:center; width: 25%;" class="has-border bold-text"><span />Quantity</td>
+                        </tr>
+                        
+                        <t t-set="counter" t-value="1"/>
+                        <t t-foreach="o.line_ids" t-as="product">
+                            <tr class="has-border">
+                                <td>
+                                    <t t-esc="counter"/>
+                                </td>
+                                <td style="text-align:center;" class="has-border"><span style="text-transform: capitalize ;" t-esc="product.product_id.name"/></td>
+                                <td style="text-align:center;" class="has-border"><span style="text-transform: capitalize ;" t-esc="product.product_description_variants"/></td>
+                                <td style="text-align:center;" class="has-border"><span style="text-transform: capitalize ;" t-esc="product.product_qty"/></td>
+                                <t t-set="counter" t-value="counter+1"/>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table> -->
+                
+  
+                <table class="mainborder" style="margin-top:25px;" width="100%">
+                    <thead class="mainborder" style="text-align:center;">
+                        
+                        <tr>
+                            <td class="mainborder text-bold" style="text-align:center;" rowspan="3">S. No.</td>
+                            <td class="mainborder text-bold" style="text-align:center;" rowspan="3">Vendor</td>
+                            <!-- <t t-foreach="o.line_ids.sorted(lambda r: r.product_id.id)" t-as="line"> -->
+                                <t t-set="agreement_lines" t-value="o.get_agreement_lines()"/>
+                                <t t-foreach="agreement_lines" t-as="line">
+                                    <td class="mainborder less-space text-center" colspan="2"><span t-esc="line[0]"/></td>
+                                </t>
+                                <td class="mainborder less-space text-center" rowspan="3"><span/>Total Quoted</td>
+                        </tr>
+                        <tr>
+                            <t t-foreach="agreement_lines" t-as="line">
+                                <td class="mainborder less-space text-center" colspan="2">Qty: <span t-esc="line[1]"/></td>
+                            </t>
+                        </tr>
+                        <tr>
+                            <t t-foreach="o.line_ids" t-as="line">
+                                <td class="mainborder less-space text-center" colspan="1"><span/>Unit P.</td>
+                                <td class="mainborder less-space text-center" colspan="1"><span/>Total P.</td>
                             </t>
                         </tr>
 
-                        <t t-set="bidders_list" t-value="o.get_evaluation_summary_lines()"/>
-                        <t t-foreach="bidders_list" t-as="bidder">
-                            <tr class="has-border">                           
-                                <td class="has-border"><span t-esc="bidder[0]"/></td>
-                                <t t-foreach="bidder[1]" t-as="checklist_item">
-                                    <td style="text-align:center;" class="has-border"><span style="text-transform: capitalize; text-align: center;" t-esc="checklist_item_value"/></td>
+                    </thead>
+                    <tbody class="mainborder">
+                        
+                        <t t-set="agreement_quotations" t-value="o.get_agreement_quotations()"/>
+                        <t t-set="counter" t-value="1"/> 
+                        <t t-foreach="agreement_quotations" t-as="quotation">
+                            <tr>
+                                <td class="mainborder less-space text-center" colspan="1"><span t-esc="counter"/></td>
+                                <td class="mainborder less-space text-center" colspan="1"><span t-esc="quotation[0]"/></td>
+                                <t t-foreach="quotation[1]" t-as="price">
+                                    <td style="text-align:center;" class="has-border"><span style="text-transform: capitalize; text-align: center;" t-esc="price_value[0]"/></td>
+                                    <td style="text-align:center;" class="has-border"><span style="text-transform: capitalize; text-align: center;" t-esc="price_value[1]"/></td>
                                 </t>
+                                <td class="mainborder less-space text-center" colspan="1"><span t-esc="quotation[2]"/></td>
                             </tr>
-                        </t>
+                        <t t-set="counter" t-value="counter+1"/>
+                    </t>
 
                     </tbody>
-                </table> -->
-                <br/>
-                <br/>
-                <!-- <p class="bold-text">Purchase Committee Members:</p>
-                <table class="">
-                    <tbody>
-                        <tr t-foreach="o.panel_id.member_ids" t-as="member">
-                            <td><span t-esc="member.name"/></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <br/> -->
+                    </table>
+   
 
             </div> 
         </t>
     </t>
 </template> 
-
+ 
  
     <template id="bids_comparative_report_template">
         <t t-call="web.html_container">
