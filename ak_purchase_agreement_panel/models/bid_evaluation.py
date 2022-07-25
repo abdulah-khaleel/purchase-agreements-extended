@@ -22,6 +22,9 @@ class BidEvaluation(models.Model):
     checklist_item_ids = fields.One2many('bid.evaluation.checklist','bid_evaluation_id', string="Evaluation Checklist")
     question_ids = fields.One2many('bid.evaluation.question', 'bid_evaluation_id', string="Bid Evaluation Questions")
     bid_approver_ids = fields.Many2many('bid.panel.members', string="Panel Members")
+    winning_bid = fields.Boolean(string="Winning Bid", readonly=True, default=False)
+    selection_complete = fields.Boolean(string="Selection Complete", default=False)
+    selection_justification = fields.Text('Selection Justification')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('to_approve', 'To Approve'),
@@ -109,6 +112,11 @@ class BidEvaluation(models.Model):
 
             if not 'pending' in self.bid_approver_ids.mapped('review_state'):
                 self.write({'state': 'done'})
+
+    def set_as_winner(self):
+        self.ensure_one()
+        self.write({'winning_bid': True})
+
 
     def get_checklist_status(self, status):
         if status == 'yes':
@@ -200,6 +208,30 @@ class BidPanelMembers(models.Model):
         ], default='pending', string="Review Status")
     approval_date = fields.Datetime('Approval Date', readonly=True)
 
+ 
+class BidEvaluationWizard(models.TransientModel):
+    _name = 'bid.evaluation.wizard'
 
+    selection_justification = fields.Text(string='Justification for Selection')
 
-    
+    def set_bid_as_winner(self):
+        self.ensure_one()
+        bid_evaluation_id = self.env['bid.evaluation'].browse(self.env.context.get('active_id'))
+        bid_evaluation_ids_state = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', bid_evaluation_id.purchase_requisition_id.id)]).mapped('state')
+        # if 'cancel' in bid_evaluation_ids_state or ''
+        #     raise ValidationError(
+        #         _(f"You cannot select a winner for a cancelled bid."))
+        #     raise ValidationError(
+        #         _(f"You cannot set a bid as winner because the evaluation is already done."))
+
+        
+        bid_evaluation_id.write({
+            'selection_justification': self.selection_justification,
+            'winning_bid': True})
+        self.env['bid.evaluation'].search([('purchase_requisition_id', '=', bid_evaluation_id.purchase_requisition_id.id)]).write({
+            'selection_complete': True})
+        bid_evaluation_id.purchase_requisition_id.write({
+            'selected_bid_id': bid_evaluation_id.po_id.id,
+            'selection_justification': self.selection_justification,
+            })
+        

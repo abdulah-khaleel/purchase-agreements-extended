@@ -109,6 +109,7 @@
                         </tr>
                     </tbody>
                 </table> -->
+               
                 <h3 class="text-center" >Comparative Bids Report</h3>
                 <br/>
                 <br/>
@@ -157,24 +158,25 @@
                     <thead class="mainborder" style="text-align:center;">
                         
                         <tr>
-                            <td class="mainborder text-bold" style="text-align:center;" rowspan="3">S. No.</td>
-                            <td class="mainborder text-bold" style="text-align:center;" rowspan="3">Vendor</td>
+                            <td class="mainborder bold-text" style="text-align:center;" rowspan="3">S. No.</td>
+                            <td class="mainborder bold-text" style="text-align:center;" rowspan="3">Quotation Ref.</td>
+                            <td class="mainborder bold-text" style="text-align:center;" rowspan="3">Vendor</td>
                             <!-- <t t-foreach="o.line_ids.sorted(lambda r: r.product_id.id)" t-as="line"> -->
                                 <t t-set="agreement_lines" t-value="o.get_agreement_lines()"/>
                                 <t t-foreach="agreement_lines" t-as="line">
-                                    <td class="mainborder less-space text-center" colspan="2"><span t-esc="line[0]"/></td>
+                                    <td class="mainborder less-space text-center bold-text" colspan="2"><span t-esc="line[0]"/></td>
                                 </t>
-                                <td class="mainborder less-space text-center" rowspan="3"><span/>Total Quoted</td>
+                                <td class="mainborder less-space text-center bold-text" rowspan="3"><span/>Total Quoted</td>
                         </tr>
                         <tr>
                             <t t-foreach="agreement_lines" t-as="line">
-                                <td class="mainborder less-space text-center" colspan="2">Qty: <span t-esc="line[1]"/></td>
+                                <td class="mainborder less-space text-center bold-text" colspan="2">Qty: <span t-esc="line[1]"/></td>
                             </t>
                         </tr>
                         <tr>
                             <t t-foreach="o.line_ids" t-as="line">
-                                <td class="mainborder less-space text-center" colspan="1"><span/>Unit P.</td>
-                                <td class="mainborder less-space text-center" colspan="1"><span/>Total P.</td>
+                                <td class="mainborder less-space text-center bold-text" colspan="1"><span/>Unit P.</td>
+                                <td class="mainborder less-space text-center bold-text" colspan="1"><span/>Total P.</td>
                             </t>
                         </tr>
 
@@ -187,18 +189,32 @@
                             <tr>
                                 <td class="mainborder less-space text-center" colspan="1"><span t-esc="counter"/></td>
                                 <td class="mainborder less-space text-center" colspan="1"><span t-esc="quotation[0]"/></td>
-                                <t t-foreach="quotation[1]" t-as="price">
+                                <td class="mainborder less-space text-center" colspan="1"><span t-esc="quotation[1]"/></td>
+                                <t t-foreach="quotation[2]" t-as="price">
                                     <td style="text-align:center;" class="has-border"><span style="text-transform: capitalize; text-align: center;" t-esc="price_value[0]"/></td>
                                     <td style="text-align:center;" class="has-border"><span style="text-transform: capitalize; text-align: center;" t-esc="price_value[1]"/></td>
                                 </t>
-                                <td class="mainborder less-space text-center" colspan="1"><span t-esc="quotation[2]"/></td>
+                                <td class="mainborder less-space text-center" colspan="1"><span t-esc="quotation[3]"/></td>
                             </tr>
                         <t t-set="counter" t-value="counter+1"/>
                     </t>
 
                     </tbody>
-                    </table>
-   
+                </table>
+                <br />
+                <table style="width: 100%">
+                    <tbody>
+                        <tr>
+                            <td><span class="mr-3 bold-text">Winning Vendor / Bid: </span><span t-esc="o.selected_bid_id.name"/> - <span t-esc="o.selected_bid_id.partner_id.name"/></td>
+                        </tr>
+                        <tr>
+                            <td ><span class="mr-3 bold-text">Panel Justification &amp; Remarks:</span><span t-esc="o.selection_justification"/></td>
+                            <td ><span class="mr-3"></span><span /></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                
 
             </div> 
         </t>

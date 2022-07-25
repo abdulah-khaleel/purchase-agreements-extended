@@ -12,19 +12,19 @@
                 <field name="enable_panel" invisible="1" />
             </xpath>
             <xpath expr="//page[@name='products']" position="after">
-                <page string="Bid Evaluation" name="bid_evaluation">
+                <page string="Bid Evaluation" name="bid_evaluation" attrs="{'invisible': [('enable_panel', '=', False)],'required': [('enable_panel', '=', True),('state','=','in_progress')],'readonly': [('state', 'not in', ['draft','ongoing','in_progress'])]}">
+                    <group string="Evaluation Results">
+                        <group>
+                            <field name="selected_bid_id" />
+                        </group>
+                        <group></group>
+                    </group>
+                    <group>
+                        <field name="selection_justification" />
+                    </group>
+                    
                     <group string="Evaluation Guidelines">
-                        <!-- <group name="other_info"> -->
                             <field name="evaluation_guidelines" nolabel="1" placeholder="Add any guidelines or notes to be added to indidual bid evaluation records automatically."/>
-
-                            <!-- <field name="user_id" domain="[('share', '=', False)]" widget="many2one_avatar_user"/> -->
-                            <!-- <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/> -->
-                        <!-- </group> -->
-                        <!-- <group name="invoice_info"> -->
-                            <!-- <field name="invoice_status" attrs="{'invisible': [('state', 'in', ('draft', 'sent', 'to approve', 'cancel'))]}"/>
-                            <field name="payment_term_id" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}" options="{'no_create': True}"/>
-                            <field name="fiscal_position_id" options="{'no_create': True}" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/> -->
-                        <!-- </group> -->
                     </group>
                 </page>
             </xpath>

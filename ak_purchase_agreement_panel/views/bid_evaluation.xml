@@ -27,9 +27,17 @@
                     <button name="approve_evaluation" class="oe_highlight" string="Approve" type="object" attrs="{'invisible':['|',('user_status','!=','pending'),('state','!=','to_approve')]}"/>
                     <button name="cancel_evaluation"  string="Cancel" type="object" attrs="{'invisible':[('state','not in',['draft','to_approve'])]}"/>
                     <button name="reset_to_draft"   string="Reset to Draft" type="object" attrs="{'invisible':[('state','!=','cancel')]}"/>
+                    <button name="reset_to_draft"   string="Reset to Draft" type="object" attrs="{'invisible':[('state','!=','cancel')]}"/>
+                    <button name="%(action_wizard_set_bid_as_winner)d"
+                                type="action"
+                                string="Select As Winner"
+                                class="oe_highlight"
+                                target="new" context="{'format_id':active_id}" 
+                                attrs="{'invisible':['|',('selection_complete','=',True),('state','!=','done')]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,done"/>
                 </header>
                 <sheet>
+                    <widget name="web_ribbon" title="Bid Winner" attrs="{'invisible': [('winning_bid', '!=', True)]}"/>
 
                     <group string="Vendor and Bid Info">
                         <group>
@@ -37,6 +45,8 @@
                             <field name="partner_id" readonly="1"/>
                             <field name="deadline" attrs="{'readonly':[('state','in',['to_approve','done','cancel'])]}"/>
                             <field name="user_status" invisible="1"/>
+                            <field name="winning_bid"  />
+                            <field name="selection_complete" />
                             <field name="edit_questions" invisible="1"/>
                             <field name="score_avg" invisible="1"/>
                             
@@ -87,6 +97,9 @@
                             <group string="Notes">
                                     <field name="notes" nolabel="1" attrs="{'readonly':[('state','in',['to_approve','done','cancel'])]}"/>
                             </group>
+                            <group string="Selection Justification / Remarks">
+                                <field name="selection_justification" nolabel="1" attrs="{'invisible':[('winning_bid','!=',True)]}"/>
+                        </group>
                         </page>
                         <page name="Panel Members" string="Panel Members" >
                             <field name="bid_approver_ids" nolabel="1" widget="one2many" attrs="{'readonly':[('state','in',['to_approve','done','cancel'])]}">

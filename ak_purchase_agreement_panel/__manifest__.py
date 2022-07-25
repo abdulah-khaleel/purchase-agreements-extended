@@ -31,6 +31,7 @@
         'views/purchase_requisition.xml',
         'views/purchase_requisition_type.xml',
         'views/bid_evaluation_template.xml',
+        'wizard/bid_evaluation_wizard.xml',
         'views/bid_evaluation.xml',
         'views/purchase_order.xml',
         'reports/bid_evaluation_report.xml',

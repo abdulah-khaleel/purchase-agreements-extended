@@ -2,7 +2,7 @@
 
 from tabnanny import check
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 class PurchaseRequisition(models.Model):
     _inherit = "purchase.requisition"
@@ -11,6 +11,9 @@ class PurchaseRequisition(models.Model):
     panel_id = fields.Many2one('purchase.panel', string="Purchase Committee", ondelete="restrict")
     eval_template_id = fields.Many2one('bid.evaluation.template', string="Bid Evaluation Template", ondelete="restrict")
     evaluation_guidelines = fields.Text('Evaluation Guidelines')
+    selected_bid_id = fields.Many2one('purchase.order', string="Selected Bid", domain="[('requisition_id', '=', id)]")
+    selection_justification = fields.Text('Justification/Notes')
+    
 
     def get_bid_evaluations(self):
         evaluation_records = self.env['bid.evaluation'].search([('purchase_requisition_id', '=', self.id)])
@@ -99,19 +102,22 @@ class PurchaseRequisition(models.Model):
         
         # Structure of the list of prices:
         # [
-            # ['Vendor Name', {
+            # ['Vendor Name', 'PO3111', {
             #     product_id: [Unit Price, Subtotal],
             #     product_id: [Unit Price, Subtotal],
             #     }, 
             # Total Quote Price]
         # ]
       
-        quotation_ids = self.env['purchase.order'].search([('requisition_id', '=', self.id)])
+
+        # unsorted_quotation_ids = self.env['purchase.order'].search([('requisition_id', '=', self.id)])
+        quotation_ids = self.env['purchase.order'].search([('requisition_id', '=', self.id)]).sorted(key=lambda r: r.amount_total)
         product_ids = list(set(self.line_ids.mapped('product_id.id')))
 
         quotations_list = []
         for quotation in quotation_ids:
             vendor_list = []
+            vendor_list.append(quotation.name)
             vendor_list.append(quotation.partner_id.name)
             vendor_dict = {}
             if len(quotation.order_line) == 0:
@@ -131,6 +137,11 @@ class PurchaseRequisition(models.Model):
             vendor_list.append(quotation.amount_total)
             quotations_list.append(vendor_list)
         return quotations_list
+
+    def check_number_of_lines(self):
+        if len(self.line_ids) > 5:
+            raise UserError(_("Cannot generate a comparative report for more than 5 lines."))
+        return True
  
     
     def action_done(self):
@@ -144,8 +155,8 @@ class PurchaseRequisition(models.Model):
                     self.activity_schedule('ak_purchase_agreement_panel.mail_purchase_panel_member_notification',
                         date_deadline=self.date_end, 
                         user_id = user.id, 
-                        note=f"""As part of the purchae committee for the agreement: {self.name}, you 
-                        are requested to navigate to the purchase agreement above and complete the evaluation for each of the bids recieved.""")
+                        note=f"""The bid evaluation process for the purchase agreement: {self.name} has started. As part of the purchase committee, you will soon be notified
+                        once evaluations for individual bids starts.""") 
             # else:
             #     raise ValidationError(_('You need to select a Purchase Committee before validating this agreement.'))
         return super(PurchaseRequisition,self).action_open()
